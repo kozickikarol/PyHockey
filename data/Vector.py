@@ -236,7 +236,7 @@ class Vector(object):
         return math.sqrt((self.x - other[0])**2 + (self.y - other[1])**2)
  
     def projection(self, other):
-        return other*(self.dot(other)/other.length_sqrd)
+        return other*(self.dot(other)/other.length_sqrd) if other.length_sqrd else 0
  
     def cross(self, other):
         return self.x*other[1] - self.y*other[0]
@@ -246,9 +246,9 @@ class Vector(object):
         return self.x, self.y
 
     @state.setter
-    def state(self, *tup):
+    def state(self, tup):
         self.x, self.y = tup
 
-    def change_state(self, *tup):
+    def change_state(self, tup):
         self.x += tup[0]
         self.y += tup[1]

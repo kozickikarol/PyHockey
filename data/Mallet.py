@@ -1,6 +1,7 @@
 from data.MalletInterface import MalletInterface
 
 
+#TODO: Use PhysicsObject
 class Mallet(MalletInterface):
 
 
