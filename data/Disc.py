@@ -1,11 +1,12 @@
 from data.Kinematics import *
+from data.Vector import *
 
 class Disc:
     def __init__(self):
-        self.__position = Point(0, 0)
+        self.__position = Vector(0, 0)
         # TODO: radius length depends on the Pitch size
         self.__radius = 10
-        self.__velocity = Velocity(0, 0)
+        self.__velocity = Vector(0, 0)
         self.__picture_path = "../resources/graphics/disc.jpg"
 
     # TODO: Use some drawing to display the picture on a pitch
@@ -30,19 +31,19 @@ class Disc:
         return self.__picture_path
 
     def moveTo(self, x, y):
-        self.position.moveTo(x, y)
+        self.position.state = (x, y)
 
     def move(self, x_move, y_move):
-        self.position.move(x_move, y_move)
+        self.position.change_state(x_move, y_move)
 
     def accelerate(self, v_x_diff, v_y_diff):
-        self.velocity.change(v_x_diff, v_y_diff)
+        self.velocity.change_state(v_x_diff, v_y_diff)
 
     @velocity.setter
     def velocity(self, v_x, v_y):
-        self.velocity.setCoords(v_x, v_y)
+        self.velocity.state = (v_x, v_y)
 
     def printStatus(self):
         print("Position: " + self.position.x + ", " + self.position.y)
-        print("Velocity: " + self.velocity.v_x + ", " + self.velocity.v_y)
-        print("Velocity value: " + self.velocity.value())
+        print("Velocity: " + self.velocity.x + ", " + self.velocity.y)
+        print("Velocity value: " + self.velocity.length)
