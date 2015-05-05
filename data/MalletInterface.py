@@ -16,6 +16,7 @@ class MalletInterface:
         self._image = None
         self._pos_x = None
         self._pos_y = None
+        self._pitch = None
 
     @abstractproperty
     def player(self):
@@ -43,6 +44,10 @@ class MalletInterface:
 
     @abstractproperty
     def direction(self):
+        pass
+
+    @abstractproperty
+    def pitch(self):
         pass
 
     @abstractmethod

@@ -2,7 +2,7 @@ from __future__ import division
 import math
 from data.Vector import Vector
 
-class PhycicsObject(object):
+class PhysicsObject(object):
     COEFFICIENT_OF_FRICTION = 0.995
 
     def __init__(self, x_init, y_init, radius, mass):

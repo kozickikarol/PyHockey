@@ -1,6 +1,6 @@
 from data.Kinematics import *
 
-class Disc(PhycicsObject):
+class Disc(PhysicsObject):
     def __init__(self, init_x, init_y, mass, radius):
         super(Disc, self).__init__(init_x, init_y, mass, radius)
         self._picture_path = "../resources/graphics/disc.jpg"
