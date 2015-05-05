@@ -1,17 +1,13 @@
 from data.MalletInterface import MalletInterface
+from data.Kinematics import PhysicsObject
 
+class Mallet(MalletInterface, PhysicsObject):
 
-class Mallet(MalletInterface):
-
-
-    def __init__(self, player, radius, pos_x, pos_y):
-        super(Mallet, self).__init__(player)
-        self._radius = radius
-        self._pos_x = pos_x
-        self._pos_y = pos_y
-        self._velocity = 0
-        self._direction = 0
+    def __init__(self, player, radius, pos_x, pos_y, mass, pitch):
+        MalletInterface.__init__(self, player)
+        PhysicsObject.__init__(self, pos_x, pos_y, radius, mass)
         self.load_image()
+        self._pitch = pitch
 
     @property
     def image(self):
@@ -30,24 +26,28 @@ class Mallet(MalletInterface):
         return self._player
 
     @property
-    def position_x(self):
-        return self._pos_x
+    def pitch(self):
+        return self._pitch
 
     @property
-    def velocity(self):
-        return self._velocity
+    def position_x(self):
+        return self._pos.state[0]
 
     @property
     def position_y(self):
-        return self._pos_y
+        return self._pos.state[1]
+
+    @property
+    def velocity(self):
+        return self._vel
 
     @velocity.setter
     def velocity(self, v):
-        self._velocity = v
+        self._vel = v
 
     @direction.setter
     def direction(self, d):
-        self._direction = d
+        self._vel.angle = d
 
     def draw(self):
         # TODO: no class for the display available atm
@@ -55,14 +55,11 @@ class Mallet(MalletInterface):
         pass
 
     def move_by(self, x, y):
-        self._pos_x += x
-        self._pos_y += y
-        # TODO: reconsider and discuss checking and correction mechanism
+        self._vel.change_state((x, y))
         self.fix_position()
 
     def move_to(self, x, y):
-        self._pos_x = x
-        self._pos_y = y
+        self._vel.state = (x, y)
         self.fix_position()
 
     def load_image(self):
@@ -76,16 +73,11 @@ class Mallet(MalletInterface):
             raise ValueError('Invalid value for player (' + self._player + ')')
 
     def fix_position(self):
-        # TODO: no way to get player area's boundaries,
-        # if pos_x < min_x
-        #   pos_x = min_x
-        # etc...
-        pass
-
-    def print_properties(self):
-        print self.velocity
-        print self.direction
-        print self.position_x
-        print self.position_y
-        print self.player
-        print self.radius
+        if self.player == MalletInterface.PLAYER_BLUE:
+            if self.pitch.right_half(self.position_x, self.radius):
+                self.move_to(self.pitch.i_border-self.radius, self.position_y)
+        elif self.player == MalletInterface.PLAYER_RED:
+            if self.pitch.left_half(self.position_x, self.radius):
+                self.move_to(self.pitch.i_border+self.radius, self.position_y)
+        else:
+            raise ValueError('Invalid value for player(' + self._player + ')')
