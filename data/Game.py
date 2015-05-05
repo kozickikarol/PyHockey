@@ -3,6 +3,7 @@ from sys import exit
 import pygame as pg
 from pygame.locals import *
 
+
 class Game(object):
     def __init__(self, size):
         pg.init()
@@ -17,6 +18,7 @@ class Game(object):
         self.fps = 60
         self.keys = pg.key.get_pressed()
         self.done = False
+
 
         self.loop()
 

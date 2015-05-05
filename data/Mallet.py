@@ -4,7 +4,14 @@ from data.MalletInterface import MalletInterface
 class Mallet(MalletInterface):
 
 
-    def __init__(self, player, radius, pos_x, pos_y):
+    def __init__(self, shape, position):
+        #TODO WRITE DOC STRINGS!!!
+        """
+
+        :param radius: Size of mallet (units?)
+        :param pos_x:
+        :param pos_y:
+        """
         super(Mallet, self).__init__(player)
         self._radius = radius
         self._pos_x = pos_x
