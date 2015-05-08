@@ -1,21 +1,22 @@
+import pygame
+from data.DrawableInterface import Drawable
 from data.MalletInterface import MalletInterface
 
 
-class Mallet(MalletInterface):
+class Mallet(MalletInterface, Drawable):
 
-
-    def __init__(self, shape, position):
-        #TODO WRITE DOC STRINGS!!!
+    def __init__(self, radius, color, position):
+        # TODO WRITE DOC STRINGS!!!
         """
 
         :param radius: Size of mallet (units?)
-        :param pos_x:
-        :param pos_y:
+        :param color: defines which player are you creating (MalletInterface.PLAYER_RED || BLUE)
+        :param position: position of player (class Point)
         """
-        super(Mallet, self).__init__(player)
+        #super(Mallet, self).__init__()
         self._radius = radius
-        self._pos_x = pos_x
-        self._pos_y = pos_y
+        self._color = color
+        self.position = position
         self._velocity = 0
         self._direction = 0
         self.load_image()
@@ -33,20 +34,16 @@ class Mallet(MalletInterface):
         return self._radius
 
     @property
-    def player(self):
-        return self._player
-
-    @property
-    def position_x(self):
-        return self._pos_x
+    def color(self):
+        return self._color
 
     @property
     def velocity(self):
         return self._velocity
 
     @property
-    def position_y(self):
-        return self._pos_y
+    def position(self):
+        return self.position
 
     @velocity.setter
     def velocity(self, v):
@@ -56,10 +53,6 @@ class Mallet(MalletInterface):
     def direction(self, d):
         self._direction = d
 
-    def draw(self):
-        # TODO: no class for the display available atm
-        # something like display.draw(self.__image, x , y) ?
-        pass
 
     def move_by(self, x, y):
         self._pos_x += x
@@ -68,24 +61,22 @@ class Mallet(MalletInterface):
         self.fix_position()
 
     def move_to(self, x, y):
-        self._pos_x = x
-        self._pos_y = y
+        self.position.x = x
+        self.position.y = y
         self.fix_position()
 
     def load_image(self):
-        if self._player == MalletInterface.PLAYER_BLUE:
-            # TODO: load picture from resources/graphics/bluemallet.png
-            pass
-        elif self._player == MalletInterface.PLAYER_RED:
-            # TODO: load picture from resources/graphics/redmallet.png
-            pass
+        if self._color == MalletInterface.PLAYER_BLUE:
+            self.image = pygame.image.load("resources/graphics/bluemallet.png")
+        elif self._color == MalletInterface.PLAYER_RED:
+            self.image = pygame.image.load("resources/graphics/redmallet.png")
         else:
-            raise ValueError('Invalid value for player (' + self._player + ')')
+            raise ValueError('Invalid value for player (' + self._color + ')')
 
     def fix_position(self):
         # TODO: no way to get player area's boundaries,
         # if pos_x < min_x
-        #   pos_x = min_x
+        # pos_x = min_x
         # etc...
         pass
 

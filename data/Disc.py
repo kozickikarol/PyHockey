@@ -1,17 +1,22 @@
+import pygame
+
+from data.DrawableInterface import Drawable
 from data.Kinematics import *
 
-class Disc:
+
+class Disc(Drawable):
     def __init__(self):
         self.__position = Point(0, 0)
         # TODO: radius length depends on the Pitch size
-        self.__radius = 10
+        self.__radius = 50
         self.__velocity = Velocity(0, 0)
-        self.__picture_path = "../resources/graphics/disc.jpg"
+        self.__picture_path = "resources/graphics/disc.png"
+
+        self.image = pygame.transform.scale(pygame.image.load(self.__picture_path), (self.radius, self.radius))
 
     # TODO: Use some drawing to display the picture on a pitch
     # Use position, radius, picture_path
-    def display(self):
-        pass
+
 
     @property
     def position(self):

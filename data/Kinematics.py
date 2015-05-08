@@ -15,6 +15,8 @@ class Point:
         self.x = x
         self.y = y
 
+    def toArray(self):
+        return [self.x, self.y]
 
 class Velocity:
     def __init__(self, v_x, v_y):

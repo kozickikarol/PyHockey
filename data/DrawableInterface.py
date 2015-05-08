@@ -1,26 +1,16 @@
-from abc import ABCMeta
 import pygame
 
 
 class Drawable:
-    __metaclass__ = ABCMeta
 
-    def __init__(self, shape):
+    def __init__(self, image, imagerect, position):
         """
-
-        :param shape: shape or image to be drawn
+        :param image: shape or image to be drawn
+        :param position: position on screen (of type Point)
+        :param imagerect: rectangle of image to be displayed
         """
-        self.shape = shape
-
-    def __init__(self, shape, position):
-        """
-
-        :param shape: shape or image to be drawn
-        :param position: position on screen
-        """
-        self.shape = shape
+        self.image = image
         self.position = position
-
 
     def draw(self, screen):
         """
@@ -29,4 +19,4 @@ class Drawable:
         :param screen: pygame screen instance
         """
         # http://stackoverflow.com/questions/8873219/what-is-a-good-way-to-draw-images-using-pygame
-        pygame.draw()
+        screen.blit(self.image, self.position.toArray())

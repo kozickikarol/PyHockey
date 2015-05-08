@@ -1,3 +1,7 @@
+import pygame
+from data.DrawableInterface import Drawable
+from data.Kinematics import Point
+
 __author__ = 'Asia'
 
 from Goal import Goal
@@ -17,10 +21,11 @@ class OutOfRangeException(Exception):
     pass
 
 
-class Pitch:
+class Pitch(Drawable):
     """
     class represent a pitch on which the game will take a place
     """
+
     def __init__(self):
         """
         define constructor of class Pitch.
@@ -32,6 +37,11 @@ class Pitch:
         self.i_border = 50
         self.left_goal = Goal(0)
         self.right_goal = Goal(100)
+
+        #drawable part
+        # TODO better pitch image
+        self.image = pygame.image.load("resources/graphics/pitch.png")
+        self.position = Point(0, 0)
 
     def collision(self, i, j, r):
         """
