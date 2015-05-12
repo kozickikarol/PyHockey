@@ -1,8 +1,13 @@
+import pygame
+from data.DrawableInterface import Drawable
+from data.Kinematics import Point
+
 __author__ = 'Asia'
 
 from Goal import Goal
 from Disc import Disc
 from Mallet import Mallet
+from Kinematics import Vector
 
 class WrongTypeException(Exception):
     """
@@ -18,21 +23,28 @@ class OutOfRangeException(Exception):
     pass
 
 
-class Pitch:
+class Pitch(Drawable):
     """
     class represent a pitch on which the game will take a place
     """
+
     def __init__(self):
         """
         define constructor of class Pitch.
         """
         self.i_min = 0
-        self.i_max = 100
+        self.i_max = 800
         self.j_min = 0
-        self.j_max = 75
+        self.j_max = 600
         self.i_border = 50
         self.left_goal = Goal(0)
         self.right_goal = Goal(100)
+
+        #drawable part
+        # TODO better pitch image
+        self._image = pygame.image.load("resources/graphics/pitch.png")
+        self._pos = Vector(0, 0)
+
 
     #TODO: add unittests
     #TODO: There is some issue, sometimes disc sticks on border - rewrite collision checking
@@ -46,7 +58,7 @@ class Pitch:
         #TODO: Is there a way to do it better ?
         if not isinstance(object, Disc) and not isinstance(object, Mallet):
             raise WrongTypeException
-        if object.pos.x - object.radius < self.i_min or object.pos.x + object.radius > self.j_max:
+        if object.pos.x - object.radius < self.i_min or object.pos.x + object.radius > self.i_max:
             return 'x'
         if object.pos.y - object.radius < self.j_min or object.pos.y + object.radius > self.j_max:
             return 'y'

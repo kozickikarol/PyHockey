@@ -1,33 +1,19 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
+from data.DrawableInterface import Drawable
 
 
+class MalletInterface(Drawable):
 
-class MalletInterface:
-    __metaclass__ = ABCMeta
-
-    PLAYER_RED = 1
-    PLAYER_BLUE = 2
-
-    def __init__(self, player):
-        self._player = player
-        self._velocity = None
-        self._radius = None
-        self._direction = None
-        self._image = None
-        self._pos_x = None
-        self._pos_y = None
+    def __init__(self):
+        self._color = None
         self._pitch = None
 
     @abstractproperty
-    def player(self):
+    def color(self):
         pass
 
     @abstractproperty
-    def position_x(self):
-        pass
-
-    @abstractproperty
-    def position_y(self):
+    def position(self):
         pass
 
     @abstractproperty
@@ -56,10 +42,6 @@ class MalletInterface:
 
     @abstractmethod
     def move_by(self, x, y):
-        pass
-
-    @abstractmethod
-    def draw(self):
         pass
 
     @abstractmethod

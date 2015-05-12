@@ -5,7 +5,7 @@ from data.Vector import Vector
 class PhysicsObject(object):
     COEFFICIENT_OF_FRICTION = 0.995
 
-    def __init__(self, x_init, y_init, radius, mass):
+    def __init__(self, x_init, y_init, mass, radius):
         self._pos = Vector(x_init, y_init)
         self._mass = mass
         self._radius = radius
@@ -69,6 +69,8 @@ class Point:
         self.x = x
         self.y = y
 
+    def toArray(self):
+        return [self.x, self.y]
 
 class Velocity:
     def __init__(self, v_x, v_y):

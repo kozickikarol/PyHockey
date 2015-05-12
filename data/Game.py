@@ -4,7 +4,10 @@ from sys import exit
 import pygame as pg
 from pygame.locals import *
 from data.Disc import Disc
+from data.MalletInterface import MalletInterface
 from data.Pitch import Pitch
+from data.Player import Player
+
 
 class Game(object):
     def __init__(self, size):
@@ -21,47 +24,59 @@ class Game(object):
         self.keys = pg.key.get_pressed()
         self.done = False
 
+        # model part
         self.pitch = Pitch()
-        self.discs = [Disc(50, 50, 10, 1), Disc(30, 30, 10, 1), Disc(15, 15, 10, 1)]
-        self.mallets = []
+        self.players = [Player(Player.PLAYER_RED, self.pitch), Player(Player.PLAYER_BLUE, self.pitch)]
+        self.mallets = [self.players[0].mallet, self.players[1].mallet]
+        self.discs = [Disc(100, 100, 1, 26), Disc(30, 30, 1, 26)]
+        self.objects = self.discs+self.mallets
+
+        # everything that will be drawn
+        self.drawables = [self.pitch]
+        self.drawables.extend(self.mallets)
+        self.drawables.extend(self.discs)
 
         self.loop()
 
     def loop(self):
+        black = (0, 0, 0)
+
         while not self.done:
             self.clock.tick(self.fps)
-            self.screen.fill((0, 0, 0))
             for event in pg.event.get():
                 if event.type == QUIT:
                     self.done = True
-                elif event.type == KEYDOWN:
-                    if event.key == K_LEFT:
-                        self.discs[0].vel.x -= 1
-                    elif event.key == K_RIGHT:
-                        self.discs[0].vel.x += 1
-                    elif event.key == K_DOWN:
-                        self.discs[0].vel.y += 1
-                    elif event.key == K_UP:
-                        self.discs[0].vel.y -= 1
+                #only for test purposes
+                elif event.type == pg.MOUSEMOTION:
+                    self.players[0].mallet.vel.state = event.rel
+                    self.players[0].mallet.move_to(*event.pos)
 
-            for disc in self.discs:
-                disc.friction()
-                axis = self.pitch.is_border_collision(disc)
+            # dummy line to check if it actually works
+            # self.players[0].mallet.position.move(5, 0)
+
+            # reset screen
+            self.screen.fill(black)
+
+            for object in self.objects:
+                object.friction()
+                axis = self.pitch.is_border_collision(object)
                 if axis:
-                    disc.border_collision(axis)
+                    object.border_collision(axis)
 
             # Detect and react on collisions between discs
-            for i in range(len(self.discs)-1):
-                for j in range(i, len(self.discs)):
-                    self.discs[i].circle_collision(self.discs[j])
+            for i in range(len(self.objects)-1):
+                for j in range(i, len(self.objects)):
+                    self.objects[i].circle_collision(self.objects[j])
 
-            for disc in self.discs+self.mallets:
+            for disc in self.discs:
                 disc.pos.x += disc.vel.x
                 disc.pos.y += disc.vel.y
 
-            #TODO: Drawing tool
-            for disc in self.discs+self.mallets:
-                pg.draw.circle(self.screen, (255, 255, 255), (int(disc.pos.x), int(disc.pos.y)), disc.radius)
+            # draw everything
+            for drawable in self.drawables:
+                drawable.draw(self.screen)
 
-            pg.display.update()
+            # update display
+            pg.display.flip()
+
         exit()
