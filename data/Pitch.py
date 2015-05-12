@@ -5,7 +5,9 @@ from data.Kinematics import Point
 __author__ = 'Asia'
 
 from Goal import Goal
-
+from Disc import Disc
+from Mallet import Mallet
+from Kinematics import Vector
 
 class WrongTypeException(Exception):
     """
@@ -31,35 +33,36 @@ class Pitch(Drawable):
         define constructor of class Pitch.
         """
         self.i_min = 0
-        self.i_max = 100
+        self.i_max = 800
         self.j_min = 0
-        self.j_max = 75
+        self.j_max = 600
         self.i_border = 50
         self.left_goal = Goal(0)
         self.right_goal = Goal(100)
 
         #drawable part
         # TODO better pitch image
-        self.image = pygame.image.load("resources/graphics/pitch.png")
-        self.position = Point(0, 0)
+        self._image = pygame.image.load("resources/graphics/pitch.png")
+        self._pos = Vector(0, 0)
 
-    def collision(self, i, j, r):
+
+    #TODO: add unittests
+    #TODO: There is some issue, sometimes disc sticks on border - rewrite collision checking
+    def is_border_collision(self, object):
         """
         check a collision between disk and a border of the pitch
-        :param i: x coordinates of disk
-        :param j: y coordinates of disk
-        :param r: radius of disk
-        :return: true if the collision between a disk and the border of pitch have taken place, false - if it haven't
-        :raise: WrongTypeException if i, j or r is not type of int, OutOfRangeException if disk is out of pitch
+        :param object: object with x,y,radius parameters
+        :return: 'x' or 'y' if the collision between a disk/mallet and the border of pitch have taken place, false - if it haven't
+        :raise: WrongTypeException if object is not type of disc/mallet
         """
-        if not type(i) == int or not type(j) == int or not type(r) == int:
+        #TODO: Is there a way to do it better ?
+        if not isinstance(object, Disc) and not isinstance(object, Mallet):
             raise WrongTypeException
-        if i + r > self.i_max or i - r < self.i_min or j + r > self.j_max or j - r < self.j_min:
-            raise OutOfRangeException
-        if self.i_min == i - r or self.i_max == i + r or self.j_min == j - r or self.j_max == j + r:
-            return True
-        else:
-            return False
+        if object.pos.x - object.radius < self.i_min or object.pos.x + object.radius > self.i_max:
+            return 'x'
+        if object.pos.y - object.radius < self.j_min or object.pos.y + object.radius > self.j_max:
+            return 'y'
+        return False
 
     def left_half(self, ii, r):
         """

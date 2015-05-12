@@ -3,17 +3,10 @@ from data.DrawableInterface import Drawable
 
 
 class MalletInterface(Drawable):
-    PLAYER_RED = 1
-
-    PLAYER_BLUE = 2
 
     def __init__(self):
         self._color = None
-        self._velocity = None
-        self._radius = None
-        self._direction = None
-        self._image = None
-        self.position = None
+        self._pitch = None
 
     @abstractproperty
     def color(self):
@@ -37,6 +30,10 @@ class MalletInterface(Drawable):
 
     @abstractproperty
     def direction(self):
+        pass
+
+    @abstractproperty
+    def pitch(self):
         pass
 
     @abstractmethod

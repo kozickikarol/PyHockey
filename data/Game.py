@@ -1,3 +1,4 @@
+from __future__ import division
 import os
 from sys import exit
 import pygame as pg
@@ -24,12 +25,16 @@ class Game(object):
         self.done = False
 
         # model part
-        self.players = [Player(MalletInterface.PLAYER_BLUE), Player(MalletInterface.PLAYER_RED)]
-        self.disc = Disc()
         self.pitch = Pitch()
+        self.players = [Player(Player.PLAYER_RED, self.pitch), Player(Player.PLAYER_BLUE, self.pitch)]
+        self.mallets = [self.players[0].mallet, self.players[1].mallet]
+        self.discs = [Disc(100, 100, 1, 26), Disc(30, 30, 1, 26)]
+        self.objects = self.discs+self.mallets
 
         # everything that will be drawn
-        self.drawables = [self.pitch, self.players[0].mallet, self.players[1].mallet, self.disc]
+        self.drawables = [self.pitch]
+        self.drawables.extend(self.mallets)
+        self.drawables.extend(self.discs)
 
         self.loop()
 
@@ -41,12 +46,31 @@ class Game(object):
             for event in pg.event.get():
                 if event.type == QUIT:
                     self.done = True
+                #only for test purposes
+                elif event.type == pg.MOUSEMOTION:
+                    self.players[0].mallet.vel.state = event.rel
+                    self.players[0].mallet.move_to(*event.pos)
 
             # dummy line to check if it actually works
             # self.players[0].mallet.position.move(5, 0)
 
             # reset screen
             self.screen.fill(black)
+
+            for object in self.objects:
+                object.friction()
+                axis = self.pitch.is_border_collision(object)
+                if axis:
+                    object.border_collision(axis)
+
+            # Detect and react on collisions between discs
+            for i in range(len(self.objects)-1):
+                for j in range(i, len(self.objects)):
+                    self.objects[i].circle_collision(self.objects[j])
+
+            for disc in self.discs:
+                disc.pos.x += disc.vel.x
+                disc.pos.y += disc.vel.y
 
             # draw everything
             for drawable in self.drawables:
