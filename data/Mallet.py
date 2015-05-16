@@ -1,17 +1,30 @@
+import pygame
+from data.DrawableInterface import Drawable
 from data.MalletInterface import MalletInterface
+from data.Kinematics import PhysicsObject
 
 
-class Mallet(MalletInterface):
+class Mallet(MalletInterface, PhysicsObject, Drawable):
 
+    def __init__(self, radius, pos_x, pos_y, mass, player, pitch, borders):
+        # TODO WRITE DOC STRINGS!!!
+        """
 
-    def __init__(self, player, radius, pos_x, pos_y):
-        super(Mallet, self).__init__(player)
-        self._radius = radius
-        self._pos_x = pos_x
-        self._pos_y = pos_y
-        self._velocity = 0
-        self._direction = 0
-        self.load_image()
+        :param radius: Size of mallet (units?)
+        :param color: defines which player are you creating (MalletInterface.PLAYER_RED || BLUE)
+        :param position: position of player (class Point)
+        """
+
+        MalletInterface.__init__(self)
+        PhysicsObject.__init__(self, pos_x, pos_y, mass, radius)
+        #super(Mallet, self).__init__()
+        self._color = player.playerColor
+        self._borders = borders
+        self._pitch = pitch
+        self._picture_path = "resources/graphics/redmallet.png"
+        self._player = player
+
+        self._image = pygame.transform.scale(pygame.image.load(self._picture_path), (2*radius, 2*radius))
 
     @property
     def image(self):
@@ -26,66 +39,58 @@ class Mallet(MalletInterface):
         return self._radius
 
     @property
-    def player(self):
-        return self._player
+    def color(self):
+        return self._color
 
     @property
-    def position_x(self):
-        return self._pos_x
+    def pitch(self):
+        return self._pitch
 
     @property
-    def velocity(self):
-        return self._velocity
+    def pos(self):
+        return self._pos
 
     @property
-    def position_y(self):
-        return self._pos_y
+    def vel(self):
+        return self._vel
 
-    @velocity.setter
-    def velocity(self, v):
-        self._velocity = v
+    @vel.setter
+    def vel(self, v):
+        self._vel = v
 
     @direction.setter
     def direction(self, d):
-        self._direction = d
+        self.vel.angle = d
 
-    def draw(self):
-        # TODO: no class for the display available atm
-        # something like display.draw(self.__image, x , y) ?
-        pass
 
     def move_by(self, x, y):
-        self._pos_x += x
-        self._pos_y += y
-        # TODO: reconsider and discuss checking and correction mechanism
+        self._pos.change_state((x, y))
         self.fix_position()
 
     def move_to(self, x, y):
-        self._pos_x = x
-        self._pos_y = y
+        self.pos.state = ((x, y))
         self.fix_position()
 
     def load_image(self):
-        if self._player == MalletInterface.PLAYER_BLUE:
-            # TODO: load picture from resources/graphics/bluemallet.png
-            pass
-        elif self._player == MalletInterface.PLAYER_RED:
-            # TODO: load picture from resources/graphics/redmallet.png
-            pass
+        from Player import Player
+        if self._player.playerColor == Player.PLAYER_BLUE:
+            self._image = pygame.image.load("resources/graphics/bluemallet.png")
+        elif self._player.playerColor == Player.PLAYER_RED:
+            self._image = pygame.image.load("resources/graphics/redmallet.png")
         else:
-            raise ValueError('Invalid value for player (' + self._player + ')')
+            raise ValueError('Invalid value for player (' + self._player.playerColor + ')')
 
     def fix_position(self):
-        # TODO: no way to get player area's boundaries,
-        # if pos_x < min_x
-        #   pos_x = min_x
-        # etc...
-        pass
+        x_min, x_max = self._borders[0]
+        y_min, y_max = self._borders[1]
+        if self.pos.x - self.radius < x_min or self.pos.x + self.radius > x_max:
+            self.border_collision('x')
+        if self.pos.y - self.radius < y_min or self.pos.y + self.radius > y_max:
+            self.border_collision('y')
 
     def print_properties(self):
         print self.velocity
         print self.direction
-        print self.position_x
-        print self.position_y
-        print self.player
+        print self.pos
+        print self.color
         print self.radius

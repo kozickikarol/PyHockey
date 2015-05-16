@@ -1,48 +1,50 @@
+import pygame
+
+from data.DrawableInterface import Drawable
 from data.Kinematics import *
 
-class Disc:
-    def __init__(self):
-        self.__position = Point(0, 0)
-        # TODO: radius length depends on the Pitch size
-        self.__radius = 10
-        self.__velocity = Velocity(0, 0)
-        self.__picture_path = "../resources/graphics/disc.jpg"
+
+class Disc(PhysicsObject, Drawable):
+    def __init__(self, init_x, init_y, mass, radius):
+        super(Disc, self).__init__(init_x, init_y, mass, radius)
+        self._picture_path = "resources/graphics/disc.png"
+
+        self._image = pygame.transform.scale(pygame.image.load(self._picture_path), (2*radius, 2*radius))
 
     # TODO: Use some drawing to display the picture on a pitch
     # Use position, radius, picture_path
-    def display(self):
-        pass
+
 
     @property
-    def position(self):
-        return self.__position
+    def pos(self):
+        return self._pos
 
     @property
-    def velocity(self):
-        return self.__velocity
+    def vel(self):
+        return self._vel
 
     @property
     def radius(self):
-        return self.__radius
+        return self._radius
 
     @property
     def picture_path(self):
-        return self.__picture_path
+        return self._picture_path
 
     def moveTo(self, x, y):
-        self.position.moveTo(x, y)
+        self._pos.state = (x, y)
 
     def move(self, x_move, y_move):
-        self.position.move(x_move, y_move)
+        self._pos.change_state((x_move, y_move))
 
     def accelerate(self, v_x_diff, v_y_diff):
-        self.velocity.change(v_x_diff, v_y_diff)
+        self._vel.change_state((v_x_diff, v_y_diff))
 
-    @velocity.setter
-    def velocity(self, v_x, v_y):
-        self.velocity.setCoords(v_x, v_y)
+    @vel.setter
+    def vel(self, vel):
+        self._vel.state = vel
 
     def printStatus(self):
-        print("Position: " + self.position.x + ", " + self.position.y)
-        print("Velocity: " + self.velocity.v_x + ", " + self.velocity.v_y)
-        print("Velocity value: " + self.velocity.value())
+        print("Position: " + self._pos.x + ", " + self._pos.y)
+        print("Velocity: " + self._vel.x + ", " + self._vel.y)
+        print("Velocity value: " + self._vel.length)
