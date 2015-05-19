@@ -19,18 +19,25 @@ class Goal:
     """
     class represent a goal on the Pitch
     """
-    def __init__(self, v):
+    #def __init__(self, v): #what is v?
+    def __init__(self, x, y_center, width, goal_type):
         """
         define constructor of class Goal. If the value will not be equal 'L' or 'R', the function raise the ValueError
-        :param v: x layout of the goal
+        :param x: x position
+        :param y_center: y coordinate of the center of goal
+        :param width: width of goal which is measured along y axis.
+        :param goal_type: 'l' for left and 'r' for right goal
         :return: none
         :raise: WrongTypeException if v is not type of int
         """
-        if not type(v) == int:
-            raise WrongTypeException
-        self.j_min = 30
-        self.j_max = 45
-        self.i = v
+        #:param v: x layout of the goal #??
+        for arg in locals():
+            if not type(arg) == int:
+                raise WrongTypeException
+        self.j_min = y_center - 0.5 * width
+        self.j_max = y_center + 0.5 * width
+        self.i = x
+        self.goal_type = goal_type
 
     def in_goal(self, i, j, r):
         """
@@ -42,10 +49,17 @@ class Goal:
         """
         if not type(i) == int or not type(j) == int or not type(r) == int:
             raise WrongTypeException
-        if i + r > self.i_max or i - r < self.i_min or j + r > self.j_max or j - r < self.j_min:
-            raise OutOfRangeException
-        if self.i == i + r and j + r > self.j_min and j + r < self.j_max:
-            return True
-        else:
-            return False
+        # see: Pitch::is_border_collision()
+        #if i + r > self.i_max or i - r < self.i_min or j + r > self.j_max or j - r < self.j_min:
+        #    raise OutOfRangeException
+        if self.goal_type == 'l':
+            if i - self.i < r and self.j_min + r < j < self.j_max - r:
+                return True
+            else:
+                return False
+        elif self.goal_type == 'r':
+            if self.i - i < r and self.j_min + r < j < self.j_max - r:
+                return True
+            else:
+                return False
 
