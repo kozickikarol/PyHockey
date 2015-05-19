@@ -16,10 +16,9 @@ class Mallet(MalletInterface, PhysicsObject, Drawable):
         """
 
         MalletInterface.__init__(self)
-        PhysicsObject.__init__(self, pos_x, pos_y, mass, radius)
+        PhysicsObject.__init__(self, pos_x, pos_y, mass, radius, borders)
         #super(Mallet, self).__init__()
         self._color = player.playerColor
-        self._borders = borders
         self._pitch = pitch
         self._picture_path = "resources/graphics/redmallet.png"
         self._player = player
@@ -63,13 +62,17 @@ class Mallet(MalletInterface, PhysicsObject, Drawable):
         self.vel.angle = d
 
 
-    def move_by(self, x, y):
-        self._pos.change_state((x, y))
-        self.fix_position()
+    #def move_by(self, x, y):
+    #    self._pos.change_state((x, y))
+    #    self.fix_position()
 
     def move_to(self, x, y):
-        self.pos.state = ((x, y))
-        self.fix_position()
+        from data.Kinematics import Vector
+        move_vector = Vector(x, y) - self._pos
+        if move_vector.length > PhysicsObject.MAX_MALLET_VELOCITY:
+            move_vector.length = PhysicsObject.MAX_MALLET_VELOCITY
+        self.pos.state = (self._pos.x + move_vector.x, self._pos.y + move_vector.y)
+        self.correct_position_in_borders()
 
     def load_image(self):
         from Player import Player
@@ -80,13 +83,17 @@ class Mallet(MalletInterface, PhysicsObject, Drawable):
         else:
             raise ValueError('Invalid value for player (' + self._player.playerColor + ')')
 
-    def fix_position(self):
+    """def fix_position(self):
         x_min, x_max = self._borders[0]
         y_min, y_max = self._borders[1]
-        if self.pos.x - self.radius < x_min or self.pos.x + self.radius > x_max:
-            self.border_collision('x')
-        if self.pos.y - self.radius < y_min or self.pos.y + self.radius > y_max:
-            self.border_collision('y')
+        if self.pos.x - self.radius < x_min:
+            self.pos.x = x_min+self.radius
+        if self.pos.x + self.radius > x_max:
+            self.pos.x = x_max-self.radius
+        if self.pos.y - self.radius < y_min:
+            self.pos.y = y_min+self.radius
+        if self.pos.y + self.radius > y_max:
+            self.pos.y = y_max-self.radius"""
 
     def print_properties(self):
         print self.velocity
