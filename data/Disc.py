@@ -5,12 +5,13 @@ from data.Kinematics import *
 
 
 class Disc(PhysicsObject, Drawable):
-    def __init__(self, init_x, init_y, mass, radius):
-        super(Disc, self).__init__(init_x, init_y, mass, radius)
-        self._picture_path = "resources/graphics/disc.png"
 
-        self._image = pygame.transform.scale(pygame.image.load(self._picture_path), (2*radius, 2*radius))
+    PICTURE_PATH = "resources/graphics/disc.png"
 
+    def __init__(self, init_x, init_y, mass, radius, borders):
+        PhysicsObject.__init__(self, init_x, init_y, mass, radius, borders)
+        image = pygame.transform.scale(pygame.image.load(self.PICTURE_PATH), (2*radius, 2*radius))
+        Drawable.__init__(self, image, None, Vector(init_x, init_y))
     # TODO: Use some drawing to display the picture on a pitch
     # Use position, radius, picture_path
 
