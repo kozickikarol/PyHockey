@@ -6,24 +6,23 @@ from data.Kinematics import PhysicsObject
 
 class Mallet(MalletInterface, PhysicsObject, Drawable):
 
-    def __init__(self, radius, pos_x, pos_y, mass, player, pitch, borders):
-        # TODO WRITE DOC STRINGS!!!
+    def __init__(self, radius, pos_x, pos_y, mass, player, borders):
         """
-
-        :param radius: Size of mallet (units?)
-        :param color: defines which player are you creating (MalletInterface.PLAYER_RED || BLUE)
-        :param position: position of player (class Point)
+        Initialize Mallet object
+        :param radius: int/float radius of Mallet
+        :param pos_x: int/float - x position of Mallet
+        :param pos_y: int/float - x position of Mallet
+        :param mass: mass of Mallet
+        :param player: Player - Mallet owner
+        :param borders: list of tuples - borders in which mallet can move
+        :return:
         """
 
         MalletInterface.__init__(self)
         PhysicsObject.__init__(self, pos_x, pos_y, mass, radius, borders)
-        #super(Mallet, self).__init__()
-        self._color = player.playerColor
-        self._pitch = pitch
-        self._picture_path = "resources/graphics/redmallet.png"
         self._player = player
+        self.load_image()
 
-        self._image = pygame.transform.scale(pygame.image.load(self._picture_path), (2*radius, 2*radius))
 
     @property
     def image(self):
@@ -36,14 +35,6 @@ class Mallet(MalletInterface, PhysicsObject, Drawable):
     @property
     def radius(self):
         return self._radius
-
-    @property
-    def color(self):
-        return self._color
-
-    @property
-    def pitch(self):
-        return self._pitch
 
     @property
     def pos(self):
@@ -75,13 +66,18 @@ class Mallet(MalletInterface, PhysicsObject, Drawable):
         self.correct_position_in_borders()
 
     def load_image(self):
+        """
+        Method used to load sprite for Mallet according to Player.
+        :return: None
+        """
         from Player import Player
         if self._player.playerColor == Player.PLAYER_BLUE:
-            self._image = pygame.image.load("resources/graphics/bluemallet.png")
+            image = "resources/graphics/bluemallet.png"
         elif self._player.playerColor == Player.PLAYER_RED:
-            self._image = pygame.image.load("resources/graphics/redmallet.png")
+            image = "resources/graphics/redmallet.png"
         else:
             raise ValueError('Invalid value for player (' + self._player.playerColor + ')')
+        self._image = pygame.transform.scale(pygame.image.load(image), (2*self.radius, 2*self.radius))
 
     """def fix_position(self):
         x_min, x_max = self._borders[0]
@@ -99,5 +95,4 @@ class Mallet(MalletInterface, PhysicsObject, Drawable):
         print self.velocity
         print self.direction
         print self.pos
-        print self.color
         print self.radius

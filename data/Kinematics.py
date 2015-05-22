@@ -5,7 +5,7 @@ from data.Vector import Vector
 
 class PhysicsObject(object):
     COEFFICIENT_OF_FRICTION = 0.99
-    COEFFICIENT_OF_BORDER_COLLISION = 0.65
+    COEFFICIENT_OF_BORDER_COLLISION = 0.8
     MAX_MALLET_VELOCITY = 25
     MAX_DISC_VELOCITY = 50
 
@@ -40,8 +40,6 @@ class PhysicsObject(object):
 
     def correct_position_post_collision(self, obj):
         """ Dislodges objects stuck in each other. """
-        from data.Disc import Disc
-        from data.Mallet import Mallet
         distance_vector = self.pos - obj.pos
 
         if distance_vector.length < self.radius + obj.radius:
@@ -55,8 +53,6 @@ class PhysicsObject(object):
             distance_vector.length = self.radius + obj.radius
             obj._pos = self._pos + distance_vector
             obj.correct_position_in_borders()
-
-
 
 
     # TODO: Add common move_to and move methods for mallet and disc
@@ -73,7 +69,6 @@ class PhysicsObject(object):
     # TODO: Add unittests
     def border_collision(self, axis):
         from data.Disc import Disc
-        from data.Mallet import Mallet
         if isinstance(self, Disc):
             if axis == 'x':
                 self._vel.x = -self._vel.x
@@ -83,9 +78,6 @@ class PhysicsObject(object):
                 self._vel.y = -self._vel.y
                 self.collision_effect()
                 self.correct_position_in_borders()
-        if isinstance(self, Mallet):
-            pass
-            # TODO: Add move mallet to pitch
 
     # TODO: Add unittests
     def circle_collision(self, object):
@@ -109,37 +101,3 @@ class PhysicsObject(object):
 
             self.apply_speed_limit()
             self.correct_position_post_collision(object)
-
-class Point:
-    """Point in 2D"""
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def move(self, x_move, y_move):
-        self.x += x_move
-        self.y += y_move
-
-    def moveTo(self, x, y):
-        self.x = x
-        self.y = y
-
-    def toArray(self):
-        return [self.x, self.y]
-
-class Velocity:
-    def __init__(self, v_x, v_y):
-        self.v_x = v_x
-        self.v_y = v_y
-
-    def value(self):
-        return math.sqrt(self.v_x ** 2 + self.v_y ** 2)
-
-    def change(self, diff_x, diff_y):
-        self.v_x += diff_x
-        self.v_y += diff_y
-
-    def setCoords(self, v_x, v_y):
-        self.v_x = v_x
-        self.v_y = v_y
-

@@ -19,6 +19,7 @@ class Drawable:
         :param screen: pygame screen instance
         """
         # http://stackoverflow.com/questions/8873219/what-is-a-good-way-to-draw-images-using-pygame
+        # if object has radius - set origin to object's center
         if hasattr(self, 'radius'):
             pos = self._pos.state[0]-self.radius, self._pos.state[1]-self.radius
             screen.blit(self._image, pos)

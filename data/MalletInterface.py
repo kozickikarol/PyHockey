@@ -5,15 +5,11 @@ from data.DrawableInterface import Drawable
 class MalletInterface(Drawable):
 
     def __init__(self):
-        self._color = None
-        self._pitch = None
+        self._player = None
+
 
     @abstractproperty
-    def color(self):
-        pass
-
-    @abstractproperty
-    def position(self):
+    def pos(self):
         pass
 
     @abstractproperty
@@ -25,15 +21,11 @@ class MalletInterface(Drawable):
         pass
 
     @abstractproperty
-    def velocity(self):
+    def vel(self):
         pass
 
     @abstractproperty
     def direction(self):
-        pass
-
-    @abstractproperty
-    def pitch(self):
         pass
 
     @abstractmethod

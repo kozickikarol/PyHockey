@@ -70,8 +70,7 @@ class Game(object):
                     self.objects[i].circle_collision(self.objects[j])
 
             for disc in self.discs:
-                disc.pos.x += disc.vel.x
-                disc.pos.y += disc.vel.y
+                disc.move(disc.vel.x, disc.vel.y)
 
             # draw everything
             for drawable in self.drawables:

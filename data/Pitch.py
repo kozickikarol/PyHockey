@@ -1,6 +1,5 @@
 import pygame
 from data.DrawableInterface import Drawable
-from data.Kinematics import Point
 
 __author__ = 'Asia'
 
@@ -47,7 +46,6 @@ class Pitch(Drawable):
 
 
     #TODO: add unittests
-    #TODO: There is some issue, sometimes disc sticks on border - rewrite collision checking
     def is_border_collision(self, object):
         """
         check a collision between disk and a border of the pitch
