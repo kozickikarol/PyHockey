@@ -1,6 +1,5 @@
 import pygame
 from data.DrawableInterface import Drawable
-from data.Kinematics import Point
 
 __author__ = 'Asia'
 
@@ -8,6 +7,7 @@ from Goal import Goal
 from Disc import Disc
 from Mallet import Mallet
 from Kinematics import Vector
+
 
 class WrongTypeException(Exception):
     """
@@ -32,6 +32,11 @@ class Pitch(Drawable):
         """
         define constructor of class Pitch.
         """
+        #i'm not sure if the line below it should be like this but tried to use DrawableInterface
+        #Am i right that we don't have Point class any more and should use Vector instead?
+        Drawable.__init__(self, "resources/graphics/pitch.png",
+                          pygame.image.load("resources/graphics/pitch.png").get_rect(),
+                          Vector(0, 0))
         #TODO: goal width should be dependent on graphics.
         goal_width = 30
 
@@ -41,17 +46,23 @@ class Pitch(Drawable):
         self.j_max = 600
         self.i_border = 50
         j_middle = 0.5 * (self.j_min + self.j_max)
-        self.left_goal = Goal(self.i_min, j_middle, goal_width, 'l')
-        self.right_goal = Goal(self.i_max, j_middle, goal_width, 'r')
+        self.goals = [Goal(self.i_min, j_middle, goal_width, 'l'),
+                      Goal(self.i_max, j_middle, goal_width, 'r')]
+
 
         #drawable part
         # TODO better pitch image
-        self._image = pygame.image.load("resources/graphics/pitch.png")
+        #self._image = pygame.image.load("resources/graphics/pitch.png")
         self._pos = Vector(0, 0)
+
+    def get_left_goal(self):
+        return self.goals[0]
+
+    def get_right_goal(self):
+        return self.goals[1]
 
 
     #TODO: add unittests
-    #TODO: There is some issue, sometimes disc sticks on border - rewrite collision checking
     def is_border_collision(self, object):
         """
         check a collision between disk and a border of the pitch

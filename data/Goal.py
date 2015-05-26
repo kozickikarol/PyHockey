@@ -31,9 +31,6 @@ class Goal:
         :raise: WrongTypeException if v is not type of int
         """
         #:param v: x layout of the goal #??
-        for arg in locals():
-            if not type(arg) == int:
-                raise WrongTypeException
         self.j_min = y_center - 0.5 * width
         self.j_max = y_center + 0.5 * width
         self.i = x
@@ -44,9 +41,10 @@ class Goal:
         :param i: x coordinates of disk
         :param j: y coordinates of disk
         :param r: radius of disk
-        :return: true if the disk has fallen into, false - if it haven't
+        :return: True if goal scored, false otherwise
         :raise: WrongTypeException if i, j or r is not type of int, OutOfRangeException if disk is out of pitch
         """
+        # another (currently unused) solution: :return: -1 if left goal scored, 1 if right goal, 0 if goal hasn't been scored.
         if not type(i) == int or not type(j) == int or not type(r) == int:
             raise WrongTypeException
         # see: Pitch::is_border_collision()
@@ -55,11 +53,15 @@ class Goal:
         if self.goal_type == 'l':
             if i - self.i < r and self.j_min + r < j < self.j_max - r:
                 return True
+        #        return -1
             else:
                 return False
+                #return 0
         elif self.goal_type == 'r':
             if self.i - i < r and self.j_min + r < j < self.j_max - r:
                 return True
+                #return 1
             else:
                 return False
+                #return 0
 

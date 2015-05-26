@@ -28,7 +28,8 @@ class Game(object):
         self.pitch = Pitch()
         self.players = [Player(Player.PLAYER_RED, self.pitch), Player(Player.PLAYER_BLUE, self.pitch)]
         self.mallets = [self.players[0].mallet, self.players[1].mallet]
-        self.discs = [Disc(100, 100, 1, 26), Disc(30, 30, 1, 26)]
+        pitch_borders = [(self.pitch.i_min, self.pitch.i_max), (self.pitch.j_min, self.pitch.j_max)]
+        self.discs = [Disc(100, 100, 1, 26, pitch_borders), Disc(30, 30, 1, 26, pitch_borders)]
         self.objects = self.discs+self.mallets
 
         # everything that will be drawn
@@ -68,9 +69,15 @@ class Game(object):
                 for j in range(i, len(self.objects)):
                     self.objects[i].circle_collision(self.objects[j])
 
+            #Check if the goal was scored.
+            for pl in self.players:
+                for d in self.discs:
+                    if pl.goal_to_score.in_goal(d.pos.x, d.pos.y):
+                        pl.addPoint()
+
+
             for disc in self.discs:
-                disc.pos.x += disc.vel.x
-                disc.pos.y += disc.vel.y
+                disc.move(disc.vel.x, disc.vel.y)
 
             # draw everything
             for drawable in self.drawables:

@@ -21,39 +21,67 @@ class Player:
     def __init__(self, player_id, pitch):
         """
         initializes Player object and creates underlying Mallet
-
-        :param playerColor: defines which player are you creating (MalletInterface.PLAYER_RED || BLUE)
+        :param player_id: defines which player are you creating
+        :param pitch: pitch is needed to calculate borders for mallet
+        :return:
         """
-        if player_id == self.PLAYER_RED:
-            self.playerColor = self.PLAYER_RED
+        if player_id == Player.PLAYER_RED:
+            self.playerColor = Player.PLAYER_RED
             self._borders = ((pitch.i_min, (pitch.i_min+pitch.i_max)/2), (pitch.j_min, pitch.j_max))
             self._center = (200, 300)
+            self._goal_to_score = pitch.get_right_goal() #opponent's goal
         else:
-            self.playerColor = self.PLAYER_BLUE
+            self.playerColor = Player.PLAYER_BLUE
             self._borders = (((pitch.i_min+pitch.i_max)/2, pitch.i_max), (pitch.j_min, pitch.j_max))
             self._center = (600, 300)
+            self._goal_to_score = pitch.get_left_goal()
+
 
         self._points = 0
         self._name = ''
         self._player_id = player_id
 
-        self._mallet = Mallet(26, self._center[0], self._center[1], 100, self, pitch, self._borders)
+        self._mallet = Mallet(26, self._center[0], self._center[1], 100, self, self._borders)
 
     @property
     def name(self):
+        """
+        Give Player's name
+        :return: string - name
+        """
         return self._name
 
     @property
     def player_id(self):
+        """
+        Give Player's ID
+        :return:
+        """
         return self._player_id
 
     @property
     def points(self):
+        """
+        Give Player's points
+        :return: integer - points
+        """
         return self._points
 
     @property
     def mallet(self):
-       return self._mallet
+        """
+        Give Mallet object assigned to player
+        :return: Mallet object
+        """
+        return self._mallet
+
+    @property
+    def goal_to_score(self):
+        """
+        Give goal of the other player (opponent)
+        :return: Goal object
+        """
+        return self._goal_to_score
 
     @name.setter
     def name(self, name):
