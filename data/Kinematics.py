@@ -8,6 +8,7 @@ class PhysicsObject(object):
     COEFFICIENT_OF_BORDER_COLLISION = 0.8
     MAX_MALLET_VELOCITY = 25
     MAX_DISC_VELOCITY = 50
+    STOPPING_VELOCITY = 0.1
 
     def __init__(self, x_init, y_init, mass, radius, borders):
         self._pos = Vector(x_init, y_init)
@@ -19,7 +20,7 @@ class PhysicsObject(object):
     # TODO: Add unittests
     def friction(self):
         self._vel.length *= self.COEFFICIENT_OF_FRICTION
-        self._vel.length = 0 if self._vel.length < 0.1 else self._vel.length
+        self._vel.length = 0 if self._vel.length < STOPPING_VELOCITY else self._vel.length
 
     def collision_effect(self):
         # TODO: a proper calculation of momentum and change in speed after collisions
@@ -54,9 +55,7 @@ class PhysicsObject(object):
             obj._pos = self._pos + distance_vector
             obj.correct_position_in_borders()
 
-
     # TODO: Add common move_to and move methods for mallet and disc
-
 
     def apply_speed_limit(self):
         from data.Disc import Disc
