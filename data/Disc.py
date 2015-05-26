@@ -18,9 +18,18 @@ class Disc(PhysicsObject, Drawable):
         :param borders: pitch's borders - list [(pitch x_min, pitch x_max), (pitch y_min, pitch y_max)]
         :return:
         """
+
         PhysicsObject.__init__(self, init_x, init_y, mass, radius, borders)
-        image = pygame.transform.scale(pygame.image.load(self.PICTURE_PATH), (2*radius, 2*radius))
-        Drawable.__init__(self, image, None, Vector(init_x, init_y))
+        self._image = None
+        self.load_image()
+        Drawable.__init__(self, self.image, None, Vector(init_x, init_y))
+
+    @property
+    def image(self):
+        """
+        returns image of Disc
+        """
+        return self._image
 
     @property
     def pos(self):
@@ -73,6 +82,9 @@ class Disc(PhysicsObject, Drawable):
         :return: None
         """
         self._vel.change_state((v_x_diff, v_y_diff))
+
+    def load_image(self):
+        self._image = pygame.transform.scale(pygame.image.load(self.PICTURE_PATH), (2*radius, 2*radius))
 
     @vel.setter
     def vel(self, vel):

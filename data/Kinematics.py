@@ -20,7 +20,7 @@ class PhysicsObject(object):
     # TODO: Add unittests
     def friction(self):
         self._vel.length *= self.COEFFICIENT_OF_FRICTION
-        self._vel.length = 0 if self._vel.length < STOPPING_VELOCITY else self._vel.length
+        self._vel.length = 0 if self._vel.length < self.STOPPING_VELOCITY else self._vel.length
 
     def collision_effect(self):
         # TODO: a proper calculation of momentum and change in speed after collisions
