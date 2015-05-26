@@ -2,16 +2,24 @@ from __future__ import division
 import os
 from sys import exit
 import pygame as pg
+import cv2
+import numpy as np
 from pygame.locals import *
 from data.Disc import Disc
 from data.MalletInterface import MalletInterface
 from data.Pitch import Pitch
 from data.Player import Player
+from multiprocessing import Pool
+import threading
 
 
 class Game(object):
     def __init__(self, size):
         pg.init()
+        self.cap = cv2.VideoCapture(0)
+
+        self.campos = (100,100)
+        self.lastcampos = (100, 100)
         pg.display.set_caption("PyHockey")
         self.screensize = (int(size[0]), int(size[1]))
 
@@ -37,21 +45,48 @@ class Game(object):
         self.drawables.extend(self.mallets)
         self.drawables.extend(self.discs)
 
+        self.stop_capture = threading.Event()
+        threading.Thread(target=self.get_image).start()
         self.loop()
+        self.stop_capture.set()
+        cv2.destroyAllWindows()
+
+    def get_image(self):
+        while not self.stop_capture.is_set():
+            _, frame = self.cap.read()
+            frame = cv2.flip(frame, 1)
+            hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+            lower_blue = np.array([90, 80, 80], dtype=np.uint8)
+            upper_blue = np.array([110,255,255], dtype=np.uint8)
+            mask = cv2.inRange(hsv, lower_blue, upper_blue)
+            res = cv2.bitwise_and(frame, frame, mask=mask)
+            imgray = cv2.cvtColor(res,cv2.COLOR_BGR2GRAY)
+            imgray = cv2.medianBlur(imgray, 5)
+            contours, hierarchy = cv2.findContours(imgray,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+            if len(contours):
+                cnt = contours[0]
+                (x,y),radius = cv2.minEnclosingCircle(cnt)
+                center = (int(x),int(y))
+                self.campos = center
+                radius = int(radius)
+                cv2.circle(frame,center,radius,(255,0,0), 2)
+            cv2.imshow('frame', frame)
+            k = cv2.waitKey(30)
 
     def loop(self):
         black = (0, 0, 0)
-
         while not self.done:
             self.clock.tick(self.fps)
             for event in pg.event.get():
                 if event.type == QUIT:
                     self.done = True
                 #only for test purposes
-                elif event.type == pg.MOUSEMOTION:
-                    self.players[0].mallet.vel.state = event.rel
-                    self.players[0].mallet.move_to(*event.pos)
+                # elif event.type == pg.MOUSEMOTION:
+                #     self.players[0].mallet.vel.state = event.rel
+                #     self.players[0].mallet.move_to(*event.pos)
 
+            self.players[0].mallet.vel.state = self.campos[0]-self.lastcampos[0], self.campos[1]-self.lastcampos[1]
+            self.players[0].mallet.move_to(self.campos[0], self.campos[1])
             # dummy line to check if it actually works
             # self.players[0].mallet.position.move(5, 0)
 
@@ -78,5 +113,4 @@ class Game(object):
 
             # update display
             pg.display.flip()
-
-        exit()
+            self.lastcampos = self.campos
