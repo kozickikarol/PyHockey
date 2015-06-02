@@ -31,10 +31,10 @@ class Pitch(Drawable):
         """
         define constructor of class Pitch.
         """
-        self.i_min = 0
-        self.i_max = 800
-        self.j_min = 0
-        self.j_max = 600
+        self.i_min = 42
+        self.i_max = 762
+        self.j_min = 154
+        self.j_max = 562
         self.i_border = 50
         self.left_goal = Goal(0)
         self.right_goal = Goal(100)

@@ -19,7 +19,7 @@ class Disc(PhysicsObject, Drawable):
         :return:
         """
         PhysicsObject.__init__(self, init_x, init_y, mass, radius, borders)
-        image = pygame.transform.scale(pygame.image.load(self.PICTURE_PATH), (2*radius, 2*radius))
+        image = pygame.transform.scale(pygame.image.load(self.PICTURE_PATH), (int(2*radius), int(2*radius)))
         Drawable.__init__(self, image, None, Vector(init_x, init_y))
 
     @property

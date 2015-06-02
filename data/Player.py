@@ -38,7 +38,7 @@ class Player:
         self._name = ''
         self._player_id = player_id
 
-        self._mallet = Mallet(26, self._center[0], self._center[1], 100, self, self._borders)
+        self._mallet = Mallet(20.5, self._center[0], self._center[1], 100, self, self._borders)
 
     @property
     def name(self):

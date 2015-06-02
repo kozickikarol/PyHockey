@@ -77,7 +77,7 @@ class Mallet(MalletInterface, PhysicsObject, Drawable):
             image = "resources/graphics/redmallet.png"
         else:
             raise ValueError('Invalid value for player (' + self._player.playerColor + ')')
-        self._image = pygame.transform.scale(pygame.image.load(image), (2*self.radius, 2*self.radius))
+        self._image = pygame.transform.scale(pygame.image.load(image), (int(2*self.radius), int(2*self.radius)))
 
     """def fix_position(self):
         x_min, x_max = self._borders[0]
