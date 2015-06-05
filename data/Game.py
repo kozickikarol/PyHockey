@@ -26,7 +26,7 @@ class Game(object):
 
         self.screen_rect = self.screen.get_rect()
         self.clock = pg.time.Clock()
-        self.fps = 60
+        self.fps = 120
         self.keys = pg.key.get_pressed()
         self.done = False
 
@@ -45,13 +45,16 @@ class Game(object):
 
         # self.stop_capture = threading.Event()
         # threading.Thread(target=self.get_image).start()
-        # self.video = VideoCapture(self.players[0], self.players[1])
-        self.BLUE_video = VideoCapture(self.players[1])
-        # self.video.start_capture()
-        self.BLUE_video.start_capture()
+        self.video = VideoCapture(self.players[0], self.players[1])
+        # self.BLUE_video = VideoCapture(self.players[0])
+        self.video.start_capture()
+        self.video.start_image_processing(self.players[0])
+        self.video.start_image_processing(self.players[1])
+        # self.BLUE_video.start_capture()
         self.loop()
-        # self.video.stop_capture()
-        self.BLUE_video.stop_capture()
+        self.video.stop_image_processing()
+        self.video.stop_capture()
+        # self.BLUE_video.stop_capture()
         # self.stop_capture.set()
         cv2.destroyAllWindows()
 
@@ -89,13 +92,13 @@ class Game(object):
                 #     self.players[0].mallet.vel.state = event.rel
                 #     self.players[0].mallet.move_to(*event.pos)
 
-            # self.players[0].mallet.vel.state, self.players[1].mallet.vel.state = self.video.vel
-            self.players[1].mallet.vel.state = self.BLUE_video.vel
-            # pos = self.video.pos
-            pos = self.BLUE_video.pos
-            self.players[1].mallet.move_to(pos[0], pos[1])
-            # self.players[0].mallet.move_to(pos[0][0], pos[0][1])
-            # self.players[1].mallet.move_to(pos[1][0], pos[1][1])
+            self.players[0].mallet.vel.state, self.players[1].mallet.vel.state = self.video.vel
+            # self.players[0].mallet.vel.state = self.BLUE_video.vel
+            pos = self.video.pos
+            # pos = self.BLUE_video.pos
+            # self.players[0].mallet.move_to(pos[0], pos[1])
+            self.players[0].mallet.move_to(pos[0][0], pos[0][1])
+            self.players[1].mallet.move_to(pos[1][0], pos[1][1])
             # dummy line to check if it actually works
             # self.players[0].mallet.position.move(5, 0)
 
