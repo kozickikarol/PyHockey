@@ -1,19 +1,23 @@
 from __future__ import division
+
 import os
 import pygame as pg
+pg.init()
 import cv2
 import numpy as np
 from pygame.locals import *
 from data.Disc import Disc
 from data.Pitch import Pitch
 from data.Player import Player
+
+from data.ScoreBoard import ScoreBoard
 import threading
 from data.VideoCapture import VideoCapture
 
 
 class Game(object):
     def __init__(self, size):
-        pg.init()
+
         # self.cap = cv2.VideoCapture(0)
 
         # self.campos = (100,100)
@@ -37,11 +41,13 @@ class Game(object):
         pitch_borders = [(self.pitch.i_min, self.pitch.i_max), (self.pitch.j_min, self.pitch.j_max)]
         self.discs = [Disc(100, 100, 1, 16.5, pitch_borders), Disc(30, 30, 1, 16.5, pitch_borders)]
         self.objects = self.discs+self.mallets
+        self.scoreboard = ScoreBoard(self.players[0], self.players[1])
 
         # everything that will be drawn
         self.drawables = [self.pitch]
         self.drawables.extend(self.mallets)
         self.drawables.extend(self.discs)
+        self.drawables.append(self.scoreboard)
 
         # self.stop_capture = threading.Event()
         # threading.Thread(target=self.get_image).start()
@@ -123,6 +129,8 @@ class Game(object):
             for drawable in self.drawables:
                 drawable.draw(self.screen)
 
+            """Showing off it works !"""
+            self.players[0].points+=1
             # update display
             pg.display.flip()
             # self.lastcampos = self.campos
