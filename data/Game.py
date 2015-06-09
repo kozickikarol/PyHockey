@@ -30,7 +30,7 @@ class Game(object):
         self.mallets = [self.players[0].mallet, self.players[1].mallet]
         pitch_borders = [(self.pitch.i_min, self.pitch.i_max), (self.pitch.j_min, self.pitch.j_max)]
         self.discs = [Disc(100, 100, 1, 26, pitch_borders), Disc(30, 30, 1, 26, pitch_borders)]
-        self.objects = self.discs+self.mallets
+        self.objects = self.mallets+self.discs
 
         # everything that will be drawn
         self.drawables = [self.pitch]

@@ -82,7 +82,7 @@ class PhysicsObject(object):
     # TODO: Add unittests
     def circle_collision(self, object):
         from data.Disc import Disc
-        if self._pos.get_distance(object.pos) <= self._radius+object.radius:
+        if self._pos.get_distance(object.pos) <= self._radius + object.radius:
             vec_pos_diff = object.pos - self._pos
             vec_to = self._vel.projection(vec_pos_diff)
             obj_vec_to = object._vel.projection(vec_pos_diff)
