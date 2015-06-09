@@ -14,7 +14,7 @@ class TestVector(unittest.TestCase):
                       ((105., 3.), 105 * 105 + 3 * 3), ((-80., 4.), -80 * -80 + 4 * 4),
                       ((-5., -3.), -5 * -5 + -3 * -3), ((12., 34.), 12 * 12 + 34 * 34),
                       ((15., -30.), 15 * 15 + -30 * -30), ((14., -98.), 14 * 14 + -98 * -98))
-    set_value = ((0, (0, 0)), (1, (1, 1)), (5, (4, 4)))
+    set_value = (0, 2, 14, 72, 114, 314, 90, 23)
     rotate_value = (((0.1, 0.5), pi/3,
                      Vector.Vector(0.1 * cos(pi/3) - 0.5*sin(pi/3), 0.1 * sin(pi/3) + 0.5 * cos(pi/3))),
                     ((5., 0.2), pi/6,
@@ -56,13 +56,11 @@ class TestVector(unittest.TestCase):
             result = checked_vector.length_sqrd
             self.assertEqual(sqrt(tup[1]), sqrt(result))
 
-    # def test_set_length(self):
-    #     for tup in self.set_value:
-    #         checked_vector = Vector.Vector(5, 5)
-    #         print 'tup:', tup[0]
-    #         checked_vector.length(tup[0])
-    #         result = (checked_vector.x, checked_vector.y)
-    #         self.assertEqual(tup[1], result)
+    def test_set_length(self):
+        for tup in self.set_value:
+            checked_vector = Vector.Vector(5, 5)
+            checked_vector.length = tup
+            self.assertEqual(tup, checked_vector.length)
 
     def test_rotated(self):
         for tup in self.rotate_value:
@@ -110,12 +108,11 @@ class TestVector(unittest.TestCase):
             checked_vector.change_state(tup)
             self.assertEqual((tup[0]*2, tup[1]*2), (checked_vector.x, checked_vector.y))
 
-    # def test_state(self):
-    #     for tup in self.init_value:
-    #         checked_vector = Vector.Vector(tup)
-    #         print tup
-    #         checked_vector.state(tup)
-    #         self.assertEqual(tup, (checked_vector.x, checked_vector.y))
+    def test_state(self):
+        for tup in self.init_value:
+            checked_vector = Vector.Vector(tup)
+            checked_vector.state = tup
+            self.assertEqual(tup, (checked_vector.x, checked_vector.y))
 
 if __name__ == '__main__':
     unittest.main()

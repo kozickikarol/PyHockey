@@ -192,6 +192,7 @@ class Vector(object):
             self.y *= value/length
         else:
             self.x = self.y = 0
+
     def rotated(self, radians):
         # radians = math.radians(angle_degrees)
         cos = math.cos(radians)
