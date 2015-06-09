@@ -3,7 +3,6 @@ import threading
 import cv2
 import numpy as np
 from data.Player import Player
-from time import sleep
 
 
 class VideoCapture():
@@ -37,9 +36,8 @@ class VideoCapture():
             self.data[self.player.playerColor]['upper'] = np.array([110, 255, 255], dtype=np.uint8)
             self.data[self.player.playerColor]['circle_color'] = (255, 0, 0)
         else:
-            #TODO Provide red mask
-            self.data[self.player.playerColor]['lower'] = np.array([90, 80, 80], dtype=np.uint8)
-            self.data[self.player.playerColor]['upper'] = np.array([110, 255, 255], dtype=np.uint8)
+            self.data[self.player.playerColor]['lower'] = np.array([158, 216, 0], dtype=np.uint8)
+            self.data[self.player.playerColor]['upper'] = np.array([202, 248, 167], dtype=np.uint8)
             self.data[self.player.playerColor]['circle_color'] = (0, 0, 255)
         if self.player2:
             if self.player2.playerColor == Player.PLAYER_BLUE:
@@ -47,66 +45,57 @@ class VideoCapture():
                 self.data[self.player2.playerColor]['upper'] = np.array([110, 255, 255], dtype=np.uint8)
                 self.data[self.player2.playerColor]['circle_color'] = (255, 0, 0)
             else:
-                #TODO Provide red mask
-                self.data[self.player2.playerColor]['lower'] = np.array([90, 80, 80], dtype=np.uint8)
-                self.data[self.player2.playerColor]['upper'] = np.array([110, 255, 255], dtype=np.uint8)
+                self.data[self.player2.playerColor]['lower'] = np.array([158, 216, 0], dtype=np.uint8)
+                self.data[self.player2.playerColor]['upper'] = np.array([202, 248, 167], dtype=np.uint8)
                 self.data[self.player2.playerColor]['circle_color'] = (0, 0, 255)
 
     def get_image(self):
         cap = cv2.VideoCapture(0)
         while not self._stop_capture.is_set():
-            _, self.frame = cap.read()
-            self.frame = cv2.resize(cv2.flip(self.frame, 1), (800, 600))
+            _, frame = cap.read()
+            self.frame = cv2.resize(cv2.flip(frame, 1), (800, 600))
             for player_id in self.data.keys():
                 cv2.circle(self.frame, self.data[player_id]['pos'], 10, self.data[player_id]['circle_color'], 2)
             cv2.imshow('frame', self.frame)
-            k = cv2.waitKey(10)
+            k = cv2.waitKey(10) & 0xFF
 
     def get_players_data(self, player_id):
         while not self._stop_image_processing.is_set():
             frame = self.frame
             if frame is None:
                 continue
+            if player_id == Player.PLAYER_RED:
+                frame = self.frame[:, :400]
+            else:
+                frame = self.frame[:, 400:]
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
             self.data[player_id]['last_pos'] = self.data[player_id]['pos']
             mask = cv2.inRange(hsv, self.data[player_id]['lower'], self.data[player_id]['upper'])
-            res = cv2.bitwise_and(frame, frame, mask=mask)
-            imgray = cv2.medianBlur(cv2.cvtColor(res, cv2.COLOR_BGR2GRAY), 5)
-            contours, hierarchy = cv2.findContours(imgray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            if len(contours):
-                cnt = contours[0]
-                (x, y), radius = cv2.minEnclosingCircle(cnt)
-                self.data[player_id]['pos'] = (int(x), int(y))
-                self.data[player_id]['vel'] = (int(x) - self.data[player_id]['last_pos'][0])/10, (int(y) - self.data[player_id]['last_pos'][1])/10
-                radius = int(radius)
-                # cv2.circle(frame, center, radius, self.data[player_id]['circle_color'], 2)
+            element = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+            mask = cv2.erode(mask, element, iterations=2)
+            mask = cv2.dilate(mask, element, iterations=2)
+            mask = cv2.erode(mask, element)
+            # res = cv2.bitwise_and(frame, frame, mask=mask)
+            # imgray = cv2.medianBlur(cv2.cvtColor(res, cv2.COLOR_BGR2GRAY), 5)
+            mask = cv2.medianBlur(mask, 5)
+            contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            maximumArea = 0
+            bestContour = None
+            for contour in contours:
+                currentArea = cv2.contourArea(contour)
+                if currentArea > maximumArea:
+                    bestContour = contour
+                    maximumArea = currentArea
+            if bestContour is not None:
+                (x, y), radius = cv2.minEnclosingCircle(bestContour)
+                if player_id == Player.PLAYER_RED:
+                    self.data[player_id]['pos'] = int(x), int(y)
+                    self.data[player_id]['vel'] = (int(x) - self.data[player_id]['last_pos'][0])/10, (int(y) - self.data[player_id]['last_pos'][1])/10
+                else:
+                    self.data[player_id]['pos'] = int(x)+400, int(y)
+                    self.data[player_id]['vel'] = (int(x) - self.data[player_id]['last_pos'][0])/10, (int(y) - self.data[player_id]['last_pos'][1])/10
             else:
                 self.data[player_id]['vel'] = (0, 0)
-
-    # def get_image(self):
-    #     while not self._stop_capture.is_set():
-    #         _, self.frame = self.cap.read()
-    #         self.frame = cv2.flip(self.frame, 1)
-    #         self.frame = cv2.resize(self.frame, (800, 600))
-    #         hsv = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
-    #         for player_id in self.data.keys():
-    #             self.data[player_id]['last_pos'] = self.data[player_id]['pos']
-    #             mask = cv2.inRange(hsv, self.data[player_id]['lower'], self.data[player_id]['upper'])
-    #             res = cv2.bitwise_and(self.frame, self.frame, mask=mask)
-    #             imgray = cv2.medianBlur(cv2.cvtColor(res, cv2.COLOR_BGR2GRAY), 5)
-    #             contours, hierarchy = cv2.findContours(imgray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    #             if len(contours):
-    #                 cnt = contours[0]
-    #                 (x, y), radius = cv2.minEnclosingCircle(cnt)
-    #                 center = (int(x), int(y))
-    #                 self.data[player_id]['pos'] = center
-    #                 self.data[player_id]['vel'] = (int(x) - self.data[player_id]['last_pos'][0])/10, (int(y) - self.data[player_id]['last_pos'][1])/10
-    #                 radius = int(radius)
-    #                 cv2.circle(self.frame, center, radius, self.data[player_id]['circle_color'], 2)
-    #             else:
-    #                 self.data[player_id]['vel'] = (0, 0)
-    #         cv2.imshow('frame', self.frame)
-    #         k = cv2.waitKey(10)
 
     def start_capture(self):
         threading.Thread(target=self.get_image).start()
