@@ -4,8 +4,7 @@ import cv2
 import numpy as np
 from data.Player import Player
 
-
-class VideoCapture():
+class VideoCapture:
 
     def __init__(self, player, player2=None):
         self.player = player
