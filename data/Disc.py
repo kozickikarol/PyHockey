@@ -21,7 +21,7 @@ class Disc(PhysicsObject, Drawable):
 
         PhysicsObject.__init__(self, init_x, init_y, mass, radius, borders)
         self._image = None
-        self.load_image()
+        self.load_image(radius)
         Drawable.__init__(self, self.image, None, Vector(init_x, init_y))
 
     @property
@@ -83,8 +83,8 @@ class Disc(PhysicsObject, Drawable):
         """
         self._vel.change_state((v_x_diff, v_y_diff))
 
-    def load_image(self):
-        self._image = pygame.transform.scale(pygame.image.load(self.PICTURE_PATH), (2*radius, 2*radius))
+    def load_image(self, radius):
+        self._image = pygame.transform.scale(pygame.image.load(self.PICTURE_PATH), (int(2*radius), int(2*radius)))
 
     @vel.setter
     def vel(self, vel):

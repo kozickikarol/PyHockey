@@ -57,6 +57,7 @@ class VideoCapture:
                 cv2.circle(self.frame, self.data[player_id]['pos'], 10, self.data[player_id]['circle_color'], 2)
             cv2.imshow('frame', self.frame)
             k = cv2.waitKey(10) & 0xFF
+        cv2.destroyAllWindows()
 
     def get_players_data(self, player_id):
         while not self._stop_image_processing.is_set():
