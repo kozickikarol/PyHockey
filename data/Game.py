@@ -10,11 +10,15 @@ from data.Player import Player
 from data.ScoreBoard import ScoreBoard
 from data.VideoCapture import VideoCapture
 from data.VideoCapture2 import VideoCapture2
+from Logger import Logger
 
 
 class Game(object):
     def __init__(self, size):
+        Logger.info("GAME INIT: Initializing PyGame...")
         pg.init()
+
+        Logger.info("GAME INIT: Initializing Display (%s)", str(size))
         pg.display.set_caption("PyHockey")
         self.screensize = (int(size[0]), int(size[1]))
 
@@ -22,11 +26,15 @@ class Game(object):
         self.screen = pg.display.set_mode(self.screensize)
 
         self.screen_rect = self.screen.get_rect()
+        Logger.info("GAME INIT: Initializing clock and fps rate...")
+
         self.clock = pg.time.Clock()
         self.fps = 120
         self.keys = pg.key.get_pressed()
         self.done = False
 
+
+        Logger.info("GAME INIT: Initializing Model...")
         # model part
         self.pitch = Pitch()
         self.players = [Player(Player.PLAYER_RED, self.pitch), Player(Player.PLAYER_BLUE, self.pitch)]
@@ -36,12 +44,14 @@ class Game(object):
         self.objects = self.discs + self.mallets
         self.scoreboard = ScoreBoard(self.players[0], self.players[1])
 
+        Logger.info("GAME INIT: Initializing Drawables...")
         # everything that will be drawn
         self.drawables = [self.pitch]
         self.drawables.extend(self.mallets)
         self.drawables.extend(self.discs)
         self.drawables.append(self.scoreboard)
 
+        Logger.info("GAME INIT: Initializing Video Capture...")
         self.video = VideoCapture(self.players[0], self.players[1])
         # self.video = VideoCapture2(size)
         self.video.start_capture()
@@ -49,10 +59,12 @@ class Game(object):
         self.video.start_image_processing(self.players[1])
         # self.video.restart_capture()
 
+        Logger.info("GAME INIT: Starting game loop...")
         self.loop()
-
+        Logger.info("GAME INIT: Game loop ended, stopping video capture...")
         self.video.stop_image_processing()
         self.video.stop_capture()
+        Logger.info("GAME INIT: Exiting")
 
     def loop(self):
         background = (255, 255, 255)
@@ -60,8 +72,10 @@ class Game(object):
             self.clock.tick(self.fps)
             for event in pg.event.get():
                 if event.type == QUIT:
+                    Logger.info("Quit event registered")
                     self.done = True
 
+            Logger.info("GAME LOOP: Setting mallet initial state")
             self.players[0].mallet.vel.state, self.players[1].mallet.vel.state = self.video.vel
             pos = self.video.pos
             # analyse next frame
@@ -77,8 +91,10 @@ class Game(object):
             # self.players[1].mallet.move_to(p2_data[0][0], p2_data[0][1])
 
             # reset screen
+            Logger.info("GAME LOOP: Resetting screen")
             self.screen.fill(background)
 
+            Logger.info("GAME LOOP: Calculating friction and collisions")
             for o in self.objects:
                 o.friction()
                 axis = self.pitch.is_border_collision(o)
@@ -93,6 +109,7 @@ class Game(object):
             for disc in self.discs:
                 disc.move(disc.vel.x, disc.vel.y)
 
+            Logger.info("GAME LOOP: Draw objects")
             # draw everything
             for drawable in self.drawables:
                 drawable.draw(self.screen)
