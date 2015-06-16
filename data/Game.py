@@ -91,6 +91,14 @@ class Game(object):
                         pl.addPoint()
                         d.move_to(d.init_x, d.init_y)
 
+            #for d in self.discs:
+            #    if self.players[0].goal_to_score.in_goal(d.pos.x, d.pos.y, Game.DISC_RADIUS):
+            #        self.players[0].addPoint()
+            #        d.move_to(d.init_x, d.init_y)
+            #    elif self.players[1].goal_to_score.in_goal(d.pos.x, d.pos.y, Game.DISC_RADIUS):
+            #        self.players[1].addPoint()
+            #        d.move_to(d.init_x, d.init_y)
+
             for o in self.objects:
                 o.friction()
                 axis = self.pitch.is_border_collision(o)

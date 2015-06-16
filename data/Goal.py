@@ -40,7 +40,7 @@ class Goal:
         :param r: radius of disk
         :raise: WrongTypeException if i, j or r is not type of int, OutOfRangeException if disk is out of pitch
         """
-        if abs(i - self.i) < r and self.j_min < j < self.j_max:
+        if abs(i - self.i) < 1.8 * r  and self.j_min < j < self.j_max:
             return True
         else:
             return False
