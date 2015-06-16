@@ -29,10 +29,12 @@ class Player:
             self.playerColor = Player.PLAYER_RED
             self._borders = ((pitch.i_min, (pitch.i_min+pitch.i_max)/2), (pitch.j_min, pitch.j_max))
             self._center = (200, 300)
+            self._goal_to_score = pitch.get_right_goal() #opponent's goal
         else:
             self.playerColor = Player.PLAYER_BLUE
             self._borders = (((pitch.i_min+pitch.i_max)/2, pitch.i_max), (pitch.j_min, pitch.j_max))
             self._center = (600, 300)
+            self._goal_to_score = pitch.get_left_goal()
 
         self._points = 0
         self._name = ''
@@ -71,6 +73,14 @@ class Player:
         :return: Mallet object
         """
         return self._mallet
+
+    @property
+    def goal_to_score(self):
+        """
+        Give goal of other player (opponent)
+        :return: Goal object
+        """
+        return self._goal_to_score
 
     @name.setter
     def name(self, name):

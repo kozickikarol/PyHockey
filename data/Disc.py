@@ -20,6 +20,8 @@ class Disc(PhysicsObject, Drawable):
         """
 
         PhysicsObject.__init__(self, init_x, init_y, mass, radius, borders)
+        self._init_x = init_x
+        self._init_y = init_y
         image = self.load_image(radius)
         Drawable.__init__(self, image, None, Vector(init_x, init_y))
 
@@ -53,6 +55,22 @@ class Disc(PhysicsObject, Drawable):
         :return: integer/float
         """
         return self._radius
+
+    @property
+    def init_x(self):
+        """
+        Initial x coord
+        :return:integer/float
+        """
+        return self._init_x
+
+    @property
+    def init_y(self):
+        """
+        Initial y coord
+        :return:integer/float
+        """
+        return self._init_y
 
     def move_to(self, x, y):
         """
