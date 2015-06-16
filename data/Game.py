@@ -14,8 +14,10 @@ from data.VideoCapture2 import VideoCapture2
 
 class Game(object):
     DISC_RADIUS = 16.5
-    INIT_POS_DISC1 = 100
-    INIT_POS_DISC2 = 30
+    INIT_DISC1_X = 402
+    INIT_DISC1_Y = 310
+    INIT_DISC2_X = 402
+    INIT_DISC2_Y = 400
 
     def __init__(self, size):
         pg.init()
@@ -36,8 +38,8 @@ class Game(object):
         self.players = [Player(Player.PLAYER_RED, self.pitch), Player(Player.PLAYER_BLUE, self.pitch)]
         self.mallets = [self.players[0].mallet, self.players[1].mallet]
         pitch_borders = [(self.pitch.i_min, self.pitch.i_max), (self.pitch.j_min, self.pitch.j_max)]
-        self.discs = [Disc(Game.INIT_POS_DISC1, Game.INIT_POS_DISC1, 1, Game.DISC_RADIUS, pitch_borders),
-                      Disc(Game.INIT_POS_DISC2, Game.INIT_POS_DISC2, 1, Game.DISC_RADIUS, pitch_borders)]
+        self.discs = [Disc(Game.INIT_DISC1_X, Game.INIT_DISC1_Y, 1, Game.DISC_RADIUS, pitch_borders),
+                      Disc(Game.INIT_DISC2_X, Game.INIT_DISC2_Y, 1, Game.DISC_RADIUS, pitch_borders)]
         self.objects = self.discs + self.mallets
         self.scoreboard = ScoreBoard(self.players[0], self.players[1])
 
@@ -90,14 +92,8 @@ class Game(object):
                     if pl.goal_to_score.in_goal(d.pos.x, d.pos.y, Game.DISC_RADIUS):
                         pl.addPoint()
                         d.move_to(d.init_x, d.init_y)
+                        d.vel.x = d.vel.y = 0.
 
-            #for d in self.discs:
-            #    if self.players[0].goal_to_score.in_goal(d.pos.x, d.pos.y, Game.DISC_RADIUS):
-            #        self.players[0].addPoint()
-            #        d.move_to(d.init_x, d.init_y)
-            #    elif self.players[1].goal_to_score.in_goal(d.pos.x, d.pos.y, Game.DISC_RADIUS):
-            #        self.players[1].addPoint()
-            #        d.move_to(d.init_x, d.init_y)
 
             for o in self.objects:
                 o.friction()

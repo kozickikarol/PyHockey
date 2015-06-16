@@ -38,7 +38,7 @@ class Pitch(Drawable):
         self.i_border = 50
         #self.left_goal = Goal(0)
         #self.right_goal = Goal(100)
-        goal_width = 15
+        goal_width = 150
         j_middle = 0.5 * (self.j_min + self.j_max)
         self.goals = [Goal(self.i_min, j_middle, goal_width),
                       Goal(self.i_max, j_middle, goal_width)]
