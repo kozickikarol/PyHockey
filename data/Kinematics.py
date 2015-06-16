@@ -80,6 +80,7 @@ class PhysicsObject(object):
     # TODO: Add unittests
     def border_collision(self, axis):
         from data.Disc import Disc
+        Logger.debug("KINEMATICS: border_collision axis=%s _vel=%s", str(axis), str(self._vel))
         if isinstance(self, Disc):
             if axis == 'x':
                 self._vel.x = -self._vel.x
@@ -89,11 +90,14 @@ class PhysicsObject(object):
                 self._vel.y = -self._vel.y
                 self.collision_effect()
                 self.correct_position_in_borders()
+        Logger.debug("KINEMATICS: _vel=%s", str(self._vel))
 
     # TODO: Add unittests
     def circle_collision(self, object):
         from data.Disc import Disc
+        Logger.debug("KINEMATICS: border_collision between %s and %s", str(self), str(object))
         if self._pos.get_distance(object.pos) <= self._radius+object.radius:
+            Logger.debug("KINEMATICS: border_collision distance=%s self.radius=%s object.radius=%s", str(self._pos.get_distance(object.pos)), str(self._radius), str(object.radius))
             vec_pos_diff = object.pos - self._pos
             vec_to = self._vel.projection(vec_pos_diff)
             obj_vec_to = object._vel.projection(vec_pos_diff)
