@@ -36,8 +36,12 @@ class Pitch(Drawable):
         self.j_min = 154
         self.j_max = 562
         self.i_border = 50
-        self.left_goal = Goal(0)
-        self.right_goal = Goal(100)
+        #self.left_goal = Goal(0)
+        #self.right_goal = Goal(100)
+        goal_width = 15
+        j_middle = 0.5 * (self.j_min + self.j_max)
+        self.goals = [Goal(self.i_min, j_middle, goal_width),
+                      Goal(self.i_max, j_middle, goal_width)]
 
         #drawable part
         # TODO better pitch image
@@ -93,3 +97,9 @@ class Pitch(Drawable):
             return True
         else:
             return False
+
+    def get_left_goal(self):
+        return self.goals[0]
+
+    def get_right_goal(self):
+        return self.goals[1]

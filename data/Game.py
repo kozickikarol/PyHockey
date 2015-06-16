@@ -13,6 +13,10 @@ from data.VideoCapture2 import VideoCapture2
 
 
 class Game(object):
+    DISC_RADIUS = 16.5
+    INIT_POS_DISC1 = 100
+    INIT_POS_DISC2 = 30
+
     def __init__(self, size):
         pg.init()
         pg.display.set_caption("PyHockey")
@@ -32,7 +36,8 @@ class Game(object):
         self.players = [Player(Player.PLAYER_RED, self.pitch), Player(Player.PLAYER_BLUE, self.pitch)]
         self.mallets = [self.players[0].mallet, self.players[1].mallet]
         pitch_borders = [(self.pitch.i_min, self.pitch.i_max), (self.pitch.j_min, self.pitch.j_max)]
-        self.discs = [Disc(100, 100, 1, 16.5, pitch_borders), Disc(30, 30, 1, 16.5, pitch_borders)]
+        self.discs = [Disc(Game.INIT_POS_DISC1, Game.INIT_POS_DISC1, 1, Game.DISC_RADIUS, pitch_borders),
+                      Disc(Game.INIT_POS_DISC2, Game.INIT_POS_DISC2, 1, Game.DISC_RADIUS, pitch_borders)]
         self.objects = self.discs + self.mallets
         self.scoreboard = ScoreBoard(self.players[0], self.players[1])
 
@@ -78,6 +83,13 @@ class Game(object):
 
             # reset screen
             self.screen.fill(background)
+
+            #check if the goal was scored
+            for pl in self.players:
+                for d in self.discs:
+                    if pl.goal_to_score.in_goal(d.pos.x, d.pos.y, Game.DISC_RADIUS):
+                        pl.addPoint()
+                        d.move_to(d.init_x, d.init_y)
 
             for o in self.objects:
                 o.friction()

@@ -31,21 +31,21 @@ class VideoCapture:
 
     def set_color_mask(self):
         if self.player.playerColor == Player.PLAYER_BLUE:
-            self.data[self.player.playerColor]['lower'] = np.array([90, 80, 80], dtype=np.uint8)
-            self.data[self.player.playerColor]['upper'] = np.array([110, 255, 255], dtype=np.uint8)
+            self.data[self.player.playerColor]['lower'] = np.array([0, 174, 175], dtype=np.uint8)
+            self.data[self.player.playerColor]['upper'] = np.array([255, 255, 255], dtype=np.uint8)
             self.data[self.player.playerColor]['circle_color'] = (255, 0, 0)
         else:
-            self.data[self.player.playerColor]['lower'] = np.array([158, 216, 0], dtype=np.uint8)
-            self.data[self.player.playerColor]['upper'] = np.array([202, 248, 167], dtype=np.uint8)
+            self.data[self.player.playerColor]['lower'] = np.array([97, 84, 7], dtype=np.uint8)
+            self.data[self.player.playerColor]['upper'] = np.array([255, 255, 255], dtype=np.uint8)
             self.data[self.player.playerColor]['circle_color'] = (0, 0, 255)
         if self.player2:
             if self.player2.playerColor == Player.PLAYER_BLUE:
-                self.data[self.player2.playerColor]['lower'] = np.array([90, 80, 80], dtype=np.uint8)
-                self.data[self.player2.playerColor]['upper'] = np.array([110, 255, 255], dtype=np.uint8)
+                self.data[self.player2.playerColor]['lower'] = np.array([144, 114, 164], dtype=np.uint8)
+                self.data[self.player2.playerColor]['upper'] = np.array([255, 255, 255], dtype=np.uint8)
                 self.data[self.player2.playerColor]['circle_color'] = (255, 0, 0)
             else:
-                self.data[self.player2.playerColor]['lower'] = np.array([158, 216, 0], dtype=np.uint8)
-                self.data[self.player2.playerColor]['upper'] = np.array([202, 248, 167], dtype=np.uint8)
+                self.data[self.player2.playerColor]['lower'] = np.array([144, 114, 164], dtype=np.uint8)
+                self.data[self.player2.playerColor]['upper'] = np.array([255, 255, 255], dtype=np.uint8)
                 self.data[self.player2.playerColor]['circle_color'] = (0, 0, 255)
 
     def get_image(self):
