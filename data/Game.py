@@ -6,6 +6,9 @@ from pygame.locals import *
 from data.Disc import Disc
 from data.Pitch import Pitch
 from data.Player import Player
+from data.Player import TooManyPointsException
+from data.ScoreBoard import GameTime
+from data.ScoreBoard import OutOfGameTimeException
 
 from data.ScoreBoard import ScoreBoard
 from data.VideoCapture import VideoCapture
@@ -32,6 +35,7 @@ class Game(object):
         self.fps = 120
         self.keys = pg.key.get_pressed()
         self.done = False
+        self.playing = True
 
         # model part
         self.pitch = Pitch()
@@ -69,6 +73,17 @@ class Game(object):
                 if event.type == QUIT:
                     self.done = True
 
+            if not self.playing:
+                continue
+
+            try:
+                GameTime.getCurrentGameTime()
+            except OutOfGameTimeException:
+                #self.done = True
+                self.playing = False
+
+
+
             self.players[0].mallet.vel.state, self.players[1].mallet.vel.state = self.video.vel
             pos = self.video.pos
             # analyse next frame
@@ -90,9 +105,13 @@ class Game(object):
             for pl in self.players:
                 for d in self.discs:
                     if pl.goal_to_score.in_goal(d.pos.x, d.pos.y, Game.DISC_RADIUS):
-                        pl.addPoint()
-                        d.move_to(d.init_x, d.init_y)
-                        d.vel.x = d.vel.y = 0.
+                        try:
+                            pl.addPoint()
+                            d.move_to(d.init_x, d.init_y)
+                            d.vel.x = d.vel.y = 0.
+                        except TooManyPointsException:
+                            self.playing = False
+
 
 
             for o in self.objects:

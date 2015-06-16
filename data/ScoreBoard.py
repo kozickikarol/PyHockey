@@ -52,8 +52,13 @@ class ScoreBoard(Drawable):
 
 
     def displayScore(self, screen):
-        scores = [Text(color=pg.Color("red"), position=(25, 25), text=str(self._player1.points), size=50),
-                  Text(color=pg.Color("blue"), position=(750, 25), text=str(self._player2.points), size=50)]
+        if self._player1.points == Player.MAX_POINTS:
+            scores = [Text(color=pg.Color("red"), position=(25, 25), text= "Player 1 won. Game over!", size=50)]
+        elif self._player2.points == Player.MAX_POINTS:
+            scores = [Text(color=pg.Color("blue"), position=(25, 25), text= "Player 2 won. Game over!", size=50)]
+        else:
+            scores = [Text(color=pg.Color("red"), position=(25, 25), text=str(self._player1.points), size=50),
+                      Text(color=pg.Color("blue"), position=(750, 25), text=str(self._player2.points), size=50)]
         for s in scores:
             s.draw(screen)
 
