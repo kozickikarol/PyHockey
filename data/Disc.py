@@ -29,7 +29,6 @@ class Disc(PhysicsObject, Drawable):
         """
         returns image of Disc
         """
-        Logger.debug('DISC: image accessed')
         return self._image
 
     @property
@@ -38,7 +37,6 @@ class Disc(PhysicsObject, Drawable):
         return position of Disc
         :return: Vector
         """
-        Logger.debug('DISC: pos accessed, returned %s', str(self._pos))
         return self._pos
 
     @property
@@ -47,7 +45,6 @@ class Disc(PhysicsObject, Drawable):
         return velocity of Disc
         :return: Vector
         """
-        Logger.debug('DISC: vel accessed, returned %s', str(self._vel))
         return self._vel
 
     @property
@@ -56,7 +53,6 @@ class Disc(PhysicsObject, Drawable):
         return radius of Disc
         :return: integer/float
         """
-        Logger.debug('DISC: radius accessed, returned %s', str(self._radius))
         return self._radius
 
     def move_to(self, x, y):
@@ -103,7 +99,6 @@ class Disc(PhysicsObject, Drawable):
         :param vel: Vector
         :return: None
         """
-        Logger.debug('DISC: vel.setter (%s)', str(vel))
         self._vel.state = vel
 
     def printStatus(self):

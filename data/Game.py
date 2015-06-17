@@ -68,6 +68,7 @@ class Game(object):
 
     def loop(self):
         background = (255, 255, 255)
+        Logger.info("GAME LOOP: In Game Loop")
         while not self.done:
             self.clock.tick(self.fps)
             for event in pg.event.get():
@@ -75,7 +76,6 @@ class Game(object):
                     Logger.info("Quit event registered")
                     self.done = True
 
-            Logger.info("GAME LOOP: Setting mallet initial state")
             self.players[0].mallet.vel.state, self.players[1].mallet.vel.state = self.video.vel
             pos = self.video.pos
             # analyse next frame
@@ -91,10 +91,8 @@ class Game(object):
             # self.players[1].mallet.move_to(p2_data[0][0], p2_data[0][1])
 
             # reset screen
-            Logger.info("GAME LOOP: Resetting screen")
             self.screen.fill(background)
 
-            Logger.info("GAME LOOP: Calculating friction and collisions")
             for o in self.objects:
                 o.friction()
                 axis = self.pitch.is_border_collision(o)
@@ -109,7 +107,6 @@ class Game(object):
             for disc in self.discs:
                 disc.move(disc.vel.x, disc.vel.y)
 
-            Logger.info("GAME LOOP: Draw objects")
             # draw everything
             for drawable in self.drawables:
                 drawable.draw(self.screen)

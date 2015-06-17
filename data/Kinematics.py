@@ -35,27 +35,30 @@ class PhysicsObject(object):
         """ Dislodges objects stuck in the pitch borders """
         x_min, x_max = self._borders[0]
         y_min, y_max = self._borders[1]
-        Logger.debug("KINEMATICS: correct_position_in_borders xmin=%s xmax=%s ymin=%s ymax=%s", str(x_min), str(x_max), str(y_min), str(y_max))
-        Logger.debug("KINEMATICS: correct_position_in_borders pos.x=%s pos.y=%s", str(self.pos.x), str(self.pos.y))
+        log = False
         if self.pos.x - self.radius < x_min:
             self.pos.x = x_min+self.radius
+            log = True
         if self.pos.x + self.radius > x_max:
             self.pos.x = x_max-self.radius
+            log = True
         if self.pos.y - self.radius < y_min:
             self.pos.y = y_min+self.radius
+            log = True
         if self.pos.y + self.radius > y_max:
             self.pos.y = y_max-self.radius
-        Logger.debug("KINEMATICS: correct_position_in_borders pos.x=%s pos.y=%s", str(self.pos.x), str(self.pos.y))
+            log = True
+        if log:
+            Logger.debug("KINEMATICS: correct_position_in_borders pos.x=%s pos.y=%s", str(self.pos.x), str(self.pos.y))
 
     def correct_position_post_collision(self, obj):
         """ Dislodges objects stuck in each other. """
         distance_vector = self.pos - obj.pos
-        Logger.debug("KINEMATICS: correct_position_post_collision distance_vector=%s self.radius=%s obj.radius=%s", str(distance_vector), str(self.radius), str(obj.radius))
         if distance_vector.length < self.radius + obj.radius:
             distance_vector.length = self.radius + obj.radius
             self._pos = obj.pos + distance_vector
             self.correct_position_in_borders()
-        Logger.debug("KINEMATICS: correct_position_post_collision distance_vector=%s self.radius=%s obj.radius=%s", str(distance_vector), str(self.radius), str(obj.radius))
+            Logger.debug("KINEMATICS: correct_position_post_collision distance_vector=%s self.radius=%s obj.radius=%s", str(distance_vector), str(self.radius), str(obj.radius))
         distance_vector = obj.pos - self.pos
 
         if distance_vector.length < obj.pos - self.pos:
@@ -95,7 +98,6 @@ class PhysicsObject(object):
     # TODO: Add unittests
     def circle_collision(self, object):
         from data.Disc import Disc
-        Logger.debug("KINEMATICS: border_collision between %s and %s", str(self), str(object))
         if self._pos.get_distance(object.pos) <= self._radius+object.radius:
             Logger.debug("KINEMATICS: border_collision distance=%s self.radius=%s object.radius=%s", str(self._pos.get_distance(object.pos)), str(self._radius), str(object.radius))
             vec_pos_diff = object.pos - self._pos
