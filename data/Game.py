@@ -6,6 +6,9 @@ from pygame.locals import *
 from data.Disc import Disc
 from data.Pitch import Pitch
 from data.Player import Player
+from data.Player import TooManyPointsException
+from data.ScoreBoard import GameTime
+from data.ScoreBoard import OutOfGameTimeException
 
 from data.ScoreBoard import ScoreBoard
 from data.VideoCapture import VideoCapture
@@ -14,6 +17,12 @@ from Logger import Logger
 
 
 class Game(object):
+    DISC_RADIUS = 16.5
+    INIT_DISC1_X = 402
+    INIT_DISC1_Y = 310
+    INIT_DISC2_X = 402
+    INIT_DISC2_Y = 400
+
     def __init__(self, size):
         Logger.info("GAME INIT: Initializing PyGame...")
         pg.init()
@@ -32,6 +41,7 @@ class Game(object):
         self.fps = 120
         self.keys = pg.key.get_pressed()
         self.done = False
+        self.playing = True
 
 
         Logger.info("GAME INIT: Initializing Model...")
@@ -40,7 +50,8 @@ class Game(object):
         self.players = [Player(Player.PLAYER_RED, self.pitch), Player(Player.PLAYER_BLUE, self.pitch)]
         self.mallets = [self.players[0].mallet, self.players[1].mallet]
         pitch_borders = [(self.pitch.i_min, self.pitch.i_max), (self.pitch.j_min, self.pitch.j_max)]
-        self.discs = [Disc(100, 100, 1, 16.5, pitch_borders), Disc(30, 30, 1, 16.5, pitch_borders)]
+        self.discs = [Disc(Game.INIT_DISC1_X, Game.INIT_DISC1_Y, 1, Game.DISC_RADIUS, pitch_borders),
+                      Disc(Game.INIT_DISC2_X, Game.INIT_DISC2_Y, 1, Game.DISC_RADIUS, pitch_borders)]
         self.objects = self.discs + self.mallets
         self.scoreboard = ScoreBoard(self.players[0], self.players[1])
 
@@ -76,6 +87,17 @@ class Game(object):
                     Logger.info("Quit event registered")
                     self.done = True
 
+            if not self.playing:
+                continue
+
+            try:
+                GameTime.getCurrentGameTime()
+            except OutOfGameTimeException:
+                #self.done = True
+                self.playing = False
+
+
+
             self.players[0].mallet.vel.state, self.players[1].mallet.vel.state = self.video.vel
             pos = self.video.pos
             # analyse next frame
@@ -92,6 +114,19 @@ class Game(object):
 
             # reset screen
             self.screen.fill(background)
+
+            #check if the goal was scored
+            for pl in self.players:
+                for d in self.discs:
+                    if pl.goal_to_score.in_goal(d.pos.x, d.pos.y, Game.DISC_RADIUS):
+                        try:
+                            pl.addPoint()
+                            d.move_to(d.init_x, d.init_y)
+                            d.vel.x = d.vel.y = 0.
+                        except TooManyPointsException:
+                            self.playing = False
+
+
 
             for o in self.objects:
                 o.friction()
