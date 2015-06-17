@@ -2,7 +2,7 @@ import pygame
 from data.DrawableInterface import Drawable
 from data.MalletInterface import MalletInterface
 from data.Kinematics import PhysicsObject
-
+from Logger import Logger
 
 class Mallet(MalletInterface, PhysicsObject, Drawable):
 
@@ -52,18 +52,17 @@ class Mallet(MalletInterface, PhysicsObject, Drawable):
     def direction(self, d):
         self.vel.angle = d
 
-
-    #def move_by(self, x, y):
-    #    self._pos.change_state((x, y))
-    #    self.fix_position()
-
     def move_to(self, x, y):
         from data.Kinematics import Vector
+        Logger.debug("MALLET: move_to(%s,%s) pos before =%s", str(x), str(y), str(self._pos))
         move_vector = Vector(x, y) - self._pos
         if move_vector.length > PhysicsObject.MAX_MALLET_VELOCITY:
             move_vector.length = PhysicsObject.MAX_MALLET_VELOCITY
         self.pos.state = (self._pos.x + move_vector.x, self._pos.y + move_vector.y)
+        Logger.debug("MALLET: move_to(%s,%s) pos after =%s", str(x), str(y), str(self._pos))
+
         self.correct_position_in_borders()
+        Logger.debug("MALLET: move_to(%s,%s) pos after position correction=%s", str(x), str(y), str(self._pos))
 
     def load_image(self):
         """
@@ -72,24 +71,15 @@ class Mallet(MalletInterface, PhysicsObject, Drawable):
         """
         from Player import Player
         if self._player.playerColor == Player.PLAYER_BLUE:
+            Logger.debug("MALLET: load_image playerColor = PLAYER_BLUE")
             image = "resources/graphics/bluemallet.png"
         elif self._player.playerColor == Player.PLAYER_RED:
+            Logger.debug("MALLET: load_image playerColor = PLAYER_RED")
             image = "resources/graphics/redmallet.png"
         else:
+            Logger.error("MALLET: Invalid value for player (" + self._player.playerColor + ")")
             raise ValueError('Invalid value for player (' + self._player.playerColor + ')')
         self._image = pygame.transform.scale(pygame.image.load(image), (int(2*self.radius), int(2*self.radius)))
-
-    """def fix_position(self):
-        x_min, x_max = self._borders[0]
-        y_min, y_max = self._borders[1]
-        if self.pos.x - self.radius < x_min:
-            self.pos.x = x_min+self.radius
-        if self.pos.x + self.radius > x_max:
-            self.pos.x = x_max-self.radius
-        if self.pos.y - self.radius < y_min:
-            self.pos.y = y_min+self.radius
-        if self.pos.y + self.radius > y_max:
-            self.pos.y = y_max-self.radius"""
 
     def print_properties(self):
         print self.velocity

@@ -1,12 +1,14 @@
-import pygame
+__author__ = 'michal'
 
-from data.DrawableInterface import Drawable
 from data.Kinematics import *
-from Logger import Logger
 
-class Disc(PhysicsObject, Drawable):
 
-    PICTURE_PATH = "resources/graphics/disc.png"
+class DummyDisc(PhysicsObject):
+    #Actually, i'm not sure what whether it is sth wrong with loading image or
+    #with my settings.
+    """
+    Disc class - version without image.
+    """
 
     def __init__(self, init_x, init_y, mass, radius, borders):
         """
@@ -19,19 +21,6 @@ class Disc(PhysicsObject, Drawable):
         :return:
         """
         PhysicsObject.__init__(self, init_x, init_y, mass, radius, borders)
-        self._init_x = init_x
-        self._init_y = init_y
-        image = self.load_image(radius)
-        Drawable.__init__(self, image, None, Vector(init_x, init_y))
-
-
-
-    @property
-    def image(self):
-        """
-        returns image of Disc
-        """
-        return self._image
 
     @property
     def pos(self):
@@ -57,22 +46,6 @@ class Disc(PhysicsObject, Drawable):
         """
         return self._radius
 
-    @property
-    def init_x(self):
-        """
-        Initial x coord
-        :return:integer/float
-        """
-        return self._init_x
-
-    @property
-    def init_y(self):
-        """
-        Initial y coord
-        :return:integer/float
-        """
-        return self._init_y
-
     def move_to(self, x, y):
         """
         Move Disc to (x, y) position
@@ -80,7 +53,6 @@ class Disc(PhysicsObject, Drawable):
         :param y: int/float
         :return: None
         """
-        Logger.debug('DISC: radius accessed, returned %s', str(self._radius))
         self._pos.state = (x, y)
 
     def move(self, x_move, y_move):
@@ -91,9 +63,7 @@ class Disc(PhysicsObject, Drawable):
         :param y_move: int/float
         :return: None
         """
-        Logger.debug('DISC: move (%s, %s), position before = %s', str(x_move), str(y_move), str(self._pos))
         self._pos.change_state((x_move, y_move))
-        Logger.debug('DISC: move (%s, %s), position after = %s', str(x_move), str(y_move), str(self._pos))
 
     def accelerate(self, v_x_diff, v_y_diff):
         """
@@ -102,13 +72,7 @@ class Disc(PhysicsObject, Drawable):
         :param v_y_diff: int/float
         :return: None
         """
-        Logger.debug('DISC: accelerate (%s, %s), velocity before = %s', str(v_x_diff), str(v_y_diff), str(self._vel))
         self._vel.change_state((v_x_diff, v_y_diff))
-        Logger.debug('DISC: accelerate (%s, %s), velocity after = %s', str(v_x_diff), str(v_y_diff), str(self._vel))
-
-    def load_image(self, radius):
-        Logger.debug('DISC: loading image (radius=%s), PICTURE_PATH = %s', str(radius), str(Disc.PICTURE_PATH))
-        return pygame.transform.scale(pygame.image.load(Disc.PICTURE_PATH), (int(2*radius), int(2*radius)))
 
     @vel.setter
     def vel(self, vel):

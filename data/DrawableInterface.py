@@ -1,5 +1,5 @@
 import pygame
-
+from Logger import Logger
 
 class Drawable:
 
@@ -9,6 +9,7 @@ class Drawable:
         :param position: position on screen (of type Point)
         :param imagerect: rectangle of image to be displayed
         """
+        Logger.debug("DRAWABLE: init(position=(%s)", str(position))
         self._image = image
         self._pos = position
 

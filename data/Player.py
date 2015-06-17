@@ -1,6 +1,6 @@
 from __future__ import division
 from Mallet import Mallet
-
+from Logger import Logger
 
 class TooManyPointsException(Exception):
     """Raised when player has more points than he can according to rules."""
@@ -26,13 +26,17 @@ class Player:
         :return:
         """
         if player_id == Player.PLAYER_RED:
+            Logger.info("PLAYER: initializing PLAYER_RED")
             self.playerColor = Player.PLAYER_RED
             self._borders = ((pitch.i_min, (pitch.i_min+pitch.i_max)/2), (pitch.j_min, pitch.j_max))
             self._center = (200, 300)
+            self._goal_to_score = pitch.get_right_goal() #opponent's goal
         else:
+            Logger.info("PLAYER: initializing PLAYER_BLUE")
             self.playerColor = Player.PLAYER_BLUE
             self._borders = (((pitch.i_min+pitch.i_max)/2, pitch.i_max), (pitch.j_min, pitch.j_max))
             self._center = (600, 300)
+            self._goal_to_score = pitch.get_left_goal()
 
         self._points = 0
         self._name = ''
@@ -72,6 +76,14 @@ class Player:
         """
         return self._mallet
 
+    @property
+    def goal_to_score(self):
+        """
+        Give goal of other player (opponent)
+        :return: Goal object
+        """
+        return self._goal_to_score
+
     @name.setter
     def name(self, name):
         self._name = name
@@ -82,6 +94,7 @@ class Player:
 
     def addPoint(self):
         """Should be called when player scores a goal."""
+        Logger.info("PLAYER: player %s scored a point", str(self.playerColor))
         self._points += 1
         if self._points >= self.MAX_POINTS:
             raise TooManyPointsException
