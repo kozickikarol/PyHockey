@@ -1,5 +1,5 @@
 __author__ = 'Asia'
-
+from Logger import Logger
 
 class WrongTypeException(Exception):
     """
@@ -29,9 +29,12 @@ class Goal:
         :return: none
         :raise: WrongTypeException if v is not type of int
         """
+
         self.j_min = y_center - 0.5 * width
         self.j_max = y_center + 0.5 * width
         self.i = x
+
+        Logger.debug("GOAL: init(jmin=%s, jmax=%s, width=%s)", str(self.j_min), str(self.j_max), str(self.i))
 
     def in_goal(self, i, j, r):
         """
@@ -41,7 +44,9 @@ class Goal:
         :raise: WrongTypeException if i, j or r is not type of int, OutOfRangeException if disk is out of pitch
         """
         if abs(i - self.i) < 1.2 * r  and self.j_min < j < self.j_max:
+            Logger.debug("GOAL: in_goal returned True")
             return True
         else:
+            Logger.debug("GOAL: in_goal returned False")
             return False
 

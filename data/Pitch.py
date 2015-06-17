@@ -7,6 +7,7 @@ from Goal import Goal
 from Disc import Disc
 from Mallet import Mallet
 from Kinematics import Vector
+from Logger import Logger
 
 class WrongTypeException(Exception):
     """
@@ -31,13 +32,15 @@ class Pitch(Drawable):
         """
         define constructor of class Pitch.
         """
+        Logger.info("PITCH: Initializing pitch")
         self.i_min = 42
         self.i_max = 762
         self.j_min = 154
         self.j_max = 562
         self.i_border = 50
-        #self.left_goal = Goal(0)
-        #self.right_goal = Goal(100)
+
+        Logger.debug("PITCH: init i_min=%s i_max=%s j_min=%s j_max=%s i_border=%s", str(self.i_min), str(self.i_max), str(self.j_min), str(self.j_max), str(self.i_border))
+
         goal_width = 150
         j_middle = 0.5 * (self.j_min + self.j_max)
         self.goals = [Goal(self.i_min, j_middle, goal_width),
@@ -45,6 +48,7 @@ class Pitch(Drawable):
 
         #drawable part
         # TODO better pitch image
+        Logger.info("PITCH: loading image")
         self._image = pygame.image.load("resources/graphics/pitch.png")
         self._pos = Vector(0, 0)
 
@@ -58,12 +62,17 @@ class Pitch(Drawable):
         :raise: WrongTypeException if object is not type of disc/mallet
         """
         #TODO: Is there a way to do it better ?
+
         if not isinstance(object, Disc) and not isinstance(object, Mallet):
+            Logger.error("PITCH: is_border_collision raised WrongTypeException")
             raise WrongTypeException
         if object.pos.x - object.radius < self.i_min or object.pos.x + object.radius > self.i_max:
+            Logger.debug("PITCH: is_border_collision return x")
             return 'x'
         if object.pos.y - object.radius < self.j_min or object.pos.y + object.radius > self.j_max:
+            Logger.debug("PITCH: is_border_collision return y")
             return 'y'
+        Logger.debug("PITCH: is_border_collision return False")
         return False
 
     def left_half(self, ii, r):

@@ -13,6 +13,7 @@ from data.ScoreBoard import OutOfGameTimeException
 from data.ScoreBoard import ScoreBoard
 from data.VideoCapture import VideoCapture
 from data.VideoCapture2 import VideoCapture2
+from Logger import Logger
 
 
 class Game(object):
@@ -23,7 +24,10 @@ class Game(object):
     INIT_DISC2_Y = 400
 
     def __init__(self, size):
+        Logger.info("GAME INIT: Initializing PyGame...")
         pg.init()
+
+        Logger.info("GAME INIT: Initializing Display (%s)", str(size))
         pg.display.set_caption("PyHockey")
         self.screensize = (int(size[0]), int(size[1]))
 
@@ -31,12 +35,16 @@ class Game(object):
         self.screen = pg.display.set_mode(self.screensize)
 
         self.screen_rect = self.screen.get_rect()
+        Logger.info("GAME INIT: Initializing clock and fps rate...")
+
         self.clock = pg.time.Clock()
         self.fps = 120
         self.keys = pg.key.get_pressed()
         self.done = False
         self.playing = True
 
+
+        Logger.info("GAME INIT: Initializing Model...")
         # model part
         self.pitch = Pitch()
         self.players = [Player(Player.PLAYER_RED, self.pitch), Player(Player.PLAYER_BLUE, self.pitch)]
@@ -47,12 +55,14 @@ class Game(object):
         self.objects = self.discs + self.mallets
         self.scoreboard = ScoreBoard(self.players[0], self.players[1])
 
+        Logger.info("GAME INIT: Initializing Drawables...")
         # everything that will be drawn
         self.drawables = [self.pitch]
         self.drawables.extend(self.mallets)
         self.drawables.extend(self.discs)
         self.drawables.append(self.scoreboard)
 
+        Logger.info("GAME INIT: Initializing Video Capture...")
         self.video = VideoCapture(self.players[0], self.players[1])
         # self.video = VideoCapture2(size)
         self.video.start_capture()
@@ -60,17 +70,21 @@ class Game(object):
         self.video.start_image_processing(self.players[1])
         # self.video.restart_capture()
 
+        Logger.info("GAME INIT: Starting game loop...")
         self.loop()
-
+        Logger.info("GAME INIT: Game loop ended, stopping video capture...")
         self.video.stop_image_processing()
         self.video.stop_capture()
+        Logger.info("GAME INIT: Exiting")
 
     def loop(self):
         background = (255, 255, 255)
+        Logger.info("GAME LOOP: In Game Loop")
         while not self.done:
             self.clock.tick(self.fps)
             for event in pg.event.get():
                 if event.type == QUIT:
+                    Logger.info("Quit event registered")
                     self.done = True
 
             if not self.playing:
