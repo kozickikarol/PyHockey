@@ -36,6 +36,11 @@ class VideoCapture:
         self._stop_image_processing = threading.Event()
 
     def set_color_mask(self, player):
+        """
+        Assigns lower/upper and circle color for player
+        :param player:
+        :return:
+        """
         if player.playerColor == Player.PLAYER_BLUE:
             self.data[player.playerColor]['lower'] = np.array([90, 80, 80], dtype=np.uint8)
             self.data[player.playerColor]['upper'] = np.array([110, 255, 255], dtype=np.uint8)
@@ -46,6 +51,12 @@ class VideoCapture:
             self.data[player.playerColor]['circle_color'] = (0, 0, 255)
 
     def convert_position(self, player_id, tup):
+        """
+        Convert coordinates to pygame proper one
+        :param player_id:
+        :param tup: (x, y)
+        :return:
+        """
         GAME_SIZE = (800, 600)
         # left side
         if player_id == Player.PLAYER_RED:
@@ -59,6 +70,10 @@ class VideoCapture:
         return int(x), int(y)
 
     def get_image(self):
+        """
+        Loop which retrieve frames from Camera
+        :return:
+        """
         cap = cv2.VideoCapture(0)
         while not self._stop_capture.is_set():
             _, frame = cap.read()
@@ -70,6 +85,11 @@ class VideoCapture:
         cv2.destroyAllWindows()
 
     def get_players_data(self, player_id):
+        """
+        Loop which save position of colored objects.
+        :param player_id:
+        :return:
+        """
         while not self._stop_image_processing.is_set():
 
             if self.frame is None:
@@ -112,25 +132,49 @@ class VideoCapture:
                 # self.data[player_id]['vel'] = (0, 0)
 
     def start_capture(self):
+        """
+        starting new thread - get_image
+        :return:
+        """
         threading.Thread(target=self.get_image).start()
 
     def start_image_processing(self, player):
+        """
+        starting new thread - get_players_data
+        :return:
+        """
         threading.Thread(target=self.get_players_data, args=(player.player_id,)).start()
 
     def stop_capture(self):
+        """
+        stopping threads - get_image
+        :return:
+        """
         self._stop_capture.set()
 
     def stop_image_processing(self):
+        """
+        stopping threads - get_players_data
+        :return:
+        """
         self._stop_image_processing.set()
 
     @property
     def pos(self):
+        """
+        Gives position of object(s)
+        :return: (x, y) or (x1, y1), (x2, y2)
+        """
         if self.player2:
             return self.data[self.player.player_id]['pos'], self.data[self.player2.player_id]['pos']
         return self.data[self.player.player_id]['pos']
 
     @property
     def vel(self):
+        """
+        Gives velocity of object(s)
+        :return: (vx, vy) or (vx1, vy1), (vx2, vy2)
+        """
         p1_vel = (sum([x[0] for x in self.data[self.player.player_id]['vel']])/len(self.data[self.player.player_id]['vel']), sum([x[1] for x in self.data[self.player.player_id]['vel']])/len(self.data[self.player.player_id]['vel']))
         # print self.data[self.player.player_id]['vel'], self.data[self.player2.player_id]['vel']
         if self.player2:

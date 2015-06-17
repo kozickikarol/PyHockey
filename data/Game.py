@@ -38,7 +38,7 @@ class Game(object):
         Logger.info("GAME INIT: Initializing clock and fps rate...")
 
         self.clock = pg.time.Clock()
-        self.fps = 120
+        self.fps = 60
         self.keys = pg.key.get_pressed()
         self.done = False
         self.playing = True
